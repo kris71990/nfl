@@ -4,6 +4,11 @@
 import requests, bs4, sys
 
 week_num = sys.argv[1]
+    
+if isinstance(week_num, str):
+    week_num = week_num.split(' ')
+    week_num = week_num[1]
+
 url = 'http://www.espn.com/nfl/schedule/_/week/' + week_num
 res = requests.get(url)
 res.raise_for_status()
@@ -13,6 +18,7 @@ bye_teams_html = soup.select('.odd.byeweek a span')
 bye_teams = []
 
 def get_bye_teams():
+    
 	for each in bye_teams_html:
 		team = each.getText()
 		bye_teams.append(team)
@@ -26,4 +32,4 @@ def get_bye_teams():
 		else:
 			print(bye_teams[each] + ', ', end="")
 
-get_bye_teams()
+
