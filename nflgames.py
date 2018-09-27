@@ -9,7 +9,6 @@ if isinstance(week_num, str):
     week_num = week_num.split(' ')
     week_num = week_num[1]
 
-
 # get team information from internet
 url = 'http://www.vegasinsider.com/nfl/odds/las-vegas/'
 res = requests.get(url)
@@ -22,7 +21,6 @@ teams_raw = []
 for item in teams_html:
 	team = item.getText()
 	teams_raw.append(team)
-
 
 # create the matchups from teams_raw list
 matchups = []
@@ -37,25 +35,22 @@ for i in range(0, num_games):
 	matchup_num += 2
 	matchup_num_2 += 2
 
-
 #get bye teams
 def byes():
+  url = 'http://www.espn.com/nfl/schedule/_/week/' + week_num
+  res = requests.get(url)
+  res.raise_for_status()
 
-    url = 'http://www.espn.com/nfl/schedule/_/week/' + week_num
-    res = requests.get(url)
-    res.raise_for_status()
+  soup = bs4.BeautifulSoup(res.text, 'html.parser')
+  bye_teams_html = soup.select('.odd.byeweek a span')
+  bye_teams = []
 
-    soup = bs4.BeautifulSoup(res.text, 'html.parser')
-    bye_teams_html = soup.select('.odd.byeweek a span')
-    bye_teams = []
-
-    byeteams.get_bye_teams()
-
+  byeteams.get_bye_teams()
 
 # open spreadsheet and write info
 def write_game_info():
 	os.chdir('/Users/kris/Desktop')
-	wb = openpyxl.load_workbook('2017picksxl.xlsx')
+	wb = openpyxl.load_workbook('2018picksxl.xlsx')
 	sheet = wb.get_sheet_by_name('Sheet 1')
 
 	#find spreadsheet start row and write game info to appropriate cells
@@ -73,10 +68,8 @@ def write_game_info():
 		else: 
 			start_row += 1
 
-	wb.save('2017picksxlnew.xlsx')
+	wb.save('2018picksxlnew.xlsx')
 
 print(matchups)
 byes()
-write_game_info()
-
-
+# write_game_info()
