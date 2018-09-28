@@ -56,7 +56,7 @@ matchups = findMatchups()
 odds = findOdds()
 
 # creates dictionary from matchup/odds data 
-def createDict():
+def createGameData():
   data = {}
   keys = range(len(matchups))
 
@@ -71,23 +71,26 @@ def createDict():
       rx = re.compile(r'([a-zA-Z\s.-]+)', re.I)
       t = rx.search(teams[1]).group(0)
       line = '-'.join(odds[i].split('-', 2)[2:]).split('-')[0].replace('EV', '')
-      data[i][matchups[i]] = odds[i]
-      print('%s -%s' % (t, line))
+      lineClean = '%s -%s' % (t, line)
+      data[i][matchups[i]] = lineClean
+      print(lineClean)
     
     # if road team is favoured
     else:
       rx = re.compile(r'([a-zA-Z\s.-]+)', re.I)
       t = rx.search(teams[0]).group(0)
       line = '-'.join(odds[i].split('-', 2)[:2])
-      data[i][matchups[i]] = odds[i]
-      print('%s %s' % (t, line))
+      lineClean = '%s %s' % (t, line)
+      data[i][matchups[i]] = lineClean
+      print(lineClean)
 
   print('\n')
   return data
 
 # Print all weekly game information to console
 print('\nGames for Week %s\n' % (week_num))
-print(createDict())
+gameData = createGameData()
+print(gameData)
 print('\n')
 print(byeteams.get_bye_teams(week_num))
 
@@ -108,8 +111,13 @@ def write_game_info():
       for row_num in range(start_row, len(matchups) + start_row):
         game = sheet.cell(row=row_num, column=1)
         game.value = matchups[write_matchup_num]
+
+        line = sheet.cell(row=row_num, column=2)
+        line.value = gameData[write_matchup_num][matchups[write_matchup_num]]
         write_matchup_num += 1       
     else: 
       start_row += 1
   
   wb.save('2018picksxlnew.xlsx')
+
+write_game_info()
