@@ -2,7 +2,7 @@
 # gets nfl weekly matchups and enters them into spreadsheet along with
 # team records from nflteams.py
 
-import requests, bs4, openpyxl, os, sys, nflteams, byeteams
+import requests, bs4, openpyxl, os, sys, re, nflteams, byeteams
 
 week_num = sys.argv[1]
 
@@ -46,24 +46,50 @@ def findOdds():
   odds = []
 
   for x in range(1, len(odds_html), 9):
-    print(odds_html[x].find('br').getText())
-    odds.append(odds_html[x])
+    game_odd = odds_html[x].find('br').getText()
+    game_odd = game_odd.replace('\t', '').replace('\n', '').replace('\xa0', '')
+    odds.append(game_odd)
   
   return odds
 
 matchups = findMatchups()
 odds = findOdds()
 
-# Print all weekly game information to console
-# print('\nGames for Week %s\n' % (week_num))
-# print(matchups)
-print('\nOdds\n')
-# print(odds)
-# print(type(odds[0]))
+# creates dictionary from matchup/odds data 
+def createDict():
+  data = {}
+  keys = range(len(matchups))
 
-# print(odds[0].find('br'))
-# print('\n')
-# print(byeteams.get_bye_teams(week_num))
+  for i in keys:
+    data[i] = { matchups[i] : None }
+
+  for i in keys:
+    teams = matchups[i].split(' at ')
+
+    # if home team is favoured
+    if re.search('u', odds[i].split('-', 2)[0]):
+      rx = re.compile(r'([a-zA-Z\s.-]+)', re.I)
+      t = rx.search(teams[1]).group(0)
+      line = '-'.join(odds[i].split('-', 2)[2:]).split('-')[0].replace('EV', '')
+      data[i][matchups[i]] = odds[i]
+      print('%s -%s' % (t, line))
+    
+    # if road team is favoured
+    else:
+      rx = re.compile(r'([a-zA-Z\s.-]+)', re.I)
+      t = rx.search(teams[0]).group(0)
+      line = '-'.join(odds[i].split('-', 2)[:2])
+      data[i][matchups[i]] = odds[i]
+      print('%s %s' % (t, line))
+
+  print('\n')
+  return data
+
+# Print all weekly game information to console
+print('\nGames for Week %s\n' % (week_num))
+print(createDict())
+print('\n')
+print(byeteams.get_bye_teams(week_num))
 
 # open spreadsheet and write info
 def write_game_info():

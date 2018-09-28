@@ -29,4 +29,6 @@ for item in teams_html:
     del team4
   delete_stuff += 1
 
-team_records_dict = {teams_raw[i]: teams_raw[i+1] for i in range(0, len(teams_raw), 2)}
+team_records_dict = {
+  teams_raw[i]: teams_raw[i+1] for i in range(0, len(teams_raw), 2)
+}
