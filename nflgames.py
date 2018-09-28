@@ -63,23 +63,23 @@ print(byeteams.get_bye_teams(week_num))
 
 # open spreadsheet and write info
 def write_game_info():
-	os.chdir('/Users/kris/Desktop')
-	wb = openpyxl.load_workbook('2018picksxl.xlsx')
-	sheet = wb.get_sheet_by_name('Sheet 1')
+  os.chdir('/Users/kris/Desktop')
+  wb = openpyxl.load_workbook('2018picksxl.xlsx')
+  sheet = wb.get_sheet_by_name('Sheet 1')
 
-	#find spreadsheet start row and write game info to appropriate cells
-	write_matchup_num = 0
-	start_row = 0
-	start_week = sys.argv[1]
-	for cell in sheet.columns[0]:
-		if cell.value == start_week:
-			start_row += 2
-			for row_num in range(start_row, len(matchups) + start_row):
-				game = sheet.cell(row=row_num, column=1)
-				game.value = matchups[write_matchup_num]
-				write_matchup_num += 1
+  #find spreadsheet start row and write game info to appropriate cells
+  write_matchup_num = 0
+  start_row = 0
+  start_week = sys.argv[1]
+  for cell in sheet.columns[0]:
+    if cell.value == start_week:
+      start_row += 2
+      for row_num in range(start_row, len(matchups) + start_row):
+        game = sheet.cell(row=row_num, column=1)
+        game.value = matchups[write_matchup_num]
+        write_matchup_num += 1
             
-		else: 
-			start_row += 1
-
-	wb.save('2018picksxlnew.xlsx')
+    else: 
+      start_row += 1
+  
+  wb.save('2018picksxlnew.xlsx')
