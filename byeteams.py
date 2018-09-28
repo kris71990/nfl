@@ -3,30 +3,27 @@
 
 import requests, bs4, sys
 
-week_num = sys.argv[1]
-    
-if isinstance(week_num, str):
-  week_num = week_num.split(' ')[1]
+def get_bye_teams(week):
+  url = 'http://www.espn.com/nfl/schedule/_/week/' + week
+  res = requests.get(url)
+  res.raise_for_status()
 
-url = 'http://www.espn.com/nfl/schedule/_/week/' + week_num
-res = requests.get(url)
-res.raise_for_status()
+  soup = bs4.BeautifulSoup(res.text, 'html.parser')
+  bye_teams_html = soup.select('.odd.byeweek a span')
+  bye_teams = []
 
-soup = bs4.BeautifulSoup(res.text, 'html.parser')
-bye_teams_html = soup.select('.odd.byeweek a span')
-bye_teams = []
-
-def get_bye_teams():
   for each in bye_teams_html:
     team = each.getText()
     bye_teams.append(team)
     
-  print("*Bye - ", end="")
+  bye_string = '*Bye - '
 
   count = 0
   for each in range(0, len(bye_teams)):
     count += 1
     if count == len(bye_teams):
-      print(bye_teams[each])
+      bye_string += bye_teams[each]
     else:
-      print(bye_teams[each] + ', ', end="")
+      bye_string += bye_teams[each] + ', '
+
+  return bye_string
