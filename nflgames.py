@@ -2,7 +2,7 @@
 # gets nfl weekly matchups and enters them into spreadsheet along with
 # team records from nflteams.py
 
-import requests, bs4, openpyxl, os, sys, nflteams, byeteams
+import requests, bs4, openpyxl, os, sys, re, nflteams, byeteams
 
 week_num = sys.argv[1]
 
@@ -46,23 +46,58 @@ def findOdds():
   odds = []
 
   for x in range(1, len(odds_html), 9):
-    odds.append(odds_html[x])
+    game_odd = odds_html[x].find('br').getText()
+    game_odd = game_odd.replace('\t', '').replace('\n', '').replace('\xa0', '')
+    odds.append(game_odd)
   
   return odds
 
 matchups = findMatchups()
 odds = findOdds()
 
+# creates dictionary from matchup/odds data 
+def createGameData():
+  data = {}
+  keys = range(len(matchups))
+
+  for i in keys:
+    data[i] = { matchups[i] : None }
+
+  for i in keys:
+    teams = matchups[i].split(' at ')
+
+    # if home team is favoured
+    if re.search('u', odds[i].split('-', 2)[0]):
+      rx = re.compile(r'([a-zA-Z\s.-]+)', re.I)
+      t = rx.search(teams[1]).group(0)[:3]
+      line = '-'.join(odds[i].split('-', 2)[2:]).split('-')[0].replace('EV', '')
+      lineClean = '%s -%s' % (t, line)
+      data[i][matchups[i]] = lineClean
+      print(lineClean)
+    
+    # if road team is favoured
+    else:
+      rx = re.compile(r'([a-zA-Z\s.-]+)', re.I)
+      t = rx.search(teams[0]).group(0)[:3]
+      line = '-'.join(odds[i].split('-', 2)[:2])
+      lineClean = '%s %s' % (t, line)
+      data[i][matchups[i]] = lineClean
+      print(lineClean)
+
+  print('\n')
+  return data
+
 # Print all weekly game information to console
 print('\nGames for Week %s\n' % (week_num))
-print(matchups)
-print('\nOdds\n')
-print(odds)
+gameData = createGameData()
+print(gameData)
 print('\n')
 print(byeteams.get_bye_teams(week_num))
 
 # open spreadsheet and write info
 def write_game_info():
+  print('\nWriting to spreadsheet...\n')
+
   os.chdir('/Users/kris/Desktop')
   wb = openpyxl.load_workbook('2018picksxl.xlsx')
   sheet = wb.get_sheet_by_name('Sheet 1')
@@ -71,15 +106,21 @@ def write_game_info():
   write_matchup_num = 0
   start_row = 0
   start_week = sys.argv[1]
+
   for cell in sheet.columns[0]:
     if cell.value == start_week:
       start_row += 2
       for row_num in range(start_row, len(matchups) + start_row):
         game = sheet.cell(row=row_num, column=1)
         game.value = matchups[write_matchup_num]
-        write_matchup_num += 1
-            
+
+        line = sheet.cell(row=row_num, column=2)
+        line.value = gameData[write_matchup_num][matchups[write_matchup_num]]
+        write_matchup_num += 1       
     else: 
       start_row += 1
   
+  print('Done')
   wb.save('2018picksxlnew.xlsx')
+
+write_game_info()
