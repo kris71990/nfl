@@ -69,7 +69,7 @@ def createGameData():
     # if home team is favoured
     if re.search('u', odds[i].split('-', 2)[0]):
       rx = re.compile(r'([a-zA-Z\s.-]+)', re.I)
-      t = rx.search(teams[1]).group(0)
+      t = rx.search(teams[1]).group(0)[:3]
       line = '-'.join(odds[i].split('-', 2)[2:]).split('-')[0].replace('EV', '')
       lineClean = '%s -%s' % (t, line)
       data[i][matchups[i]] = lineClean
@@ -78,7 +78,7 @@ def createGameData():
     # if road team is favoured
     else:
       rx = re.compile(r'([a-zA-Z\s.-]+)', re.I)
-      t = rx.search(teams[0]).group(0)
+      t = rx.search(teams[0]).group(0)[:3]
       line = '-'.join(odds[i].split('-', 2)[:2])
       lineClean = '%s %s' % (t, line)
       data[i][matchups[i]] = lineClean
@@ -96,6 +96,8 @@ print(byeteams.get_bye_teams(week_num))
 
 # open spreadsheet and write info
 def write_game_info():
+  print('\nWriting to spreadsheet...\n')
+
   os.chdir('/Users/kris/Desktop')
   wb = openpyxl.load_workbook('2018picksxl.xlsx')
   sheet = wb.get_sheet_by_name('Sheet 1')
@@ -118,6 +120,7 @@ def write_game_info():
     else: 
       start_row += 1
   
+  print('Done')
   wb.save('2018picksxlnew.xlsx')
 
 write_game_info()
