@@ -46,6 +46,7 @@ def findOdds():
   odds = []
 
   for x in range(1, len(odds_html), 9):
+    print(odds_html[x].find('br').getText())
     odds.append(odds_html[x])
   
   return odds
@@ -54,12 +55,15 @@ matchups = findMatchups()
 odds = findOdds()
 
 # Print all weekly game information to console
-print('\nGames for Week %s\n' % (week_num))
-print(matchups)
+# print('\nGames for Week %s\n' % (week_num))
+# print(matchups)
 print('\nOdds\n')
-print(odds)
-print('\n')
-print(byeteams.get_bye_teams(week_num))
+# print(odds)
+# print(type(odds[0]))
+
+# print(odds[0].find('br'))
+# print('\n')
+# print(byeteams.get_bye_teams(week_num))
 
 # open spreadsheet and write info
 def write_game_info():
@@ -71,14 +75,14 @@ def write_game_info():
   write_matchup_num = 0
   start_row = 0
   start_week = sys.argv[1]
+
   for cell in sheet.columns[0]:
     if cell.value == start_week:
       start_row += 2
       for row_num in range(start_row, len(matchups) + start_row):
         game = sheet.cell(row=row_num, column=1)
         game.value = matchups[write_matchup_num]
-        write_matchup_num += 1
-            
+        write_matchup_num += 1       
     else: 
       start_row += 1
   
