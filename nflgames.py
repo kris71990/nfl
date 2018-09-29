@@ -134,4 +134,4 @@ def write_game_info():
   print('Done')
   wb.save('2018picksxlnew.xlsx')
 
-# write_game_info()
+write_game_info()
