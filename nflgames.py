@@ -2,7 +2,7 @@
 # gets nfl weekly matchups and enters them into spreadsheet along with
 # team records from nflteams.py
 
-import requests, bs4, openpyxl, os, sys, re, nflteams, byeteams
+import requests, bs4, openpyxl, os, sys, re, nflteams, byeteams, teaminfo
 
 week_num = sys.argv[1]
 
@@ -69,7 +69,9 @@ def createGameData():
     # if home team is favoured
     if re.search('u', odds[i].split('-', 2)[0]):
       rx = re.compile(r'([a-zA-Z\s.-]+)', re.I)
-      t = rx.search(teams[1]).group(0)[:3]
+      t = rx.search(teams[1]).group(0).strip()
+      t = teaminfo.abbreviations[t]
+
       line = '-'.join(odds[i].split('-', 2)[2:]).split('-')[0].replace('EV', '')
       lineClean = '%s -%s' % (t, line)
       data[i][matchups[i]] = lineClean
@@ -78,8 +80,16 @@ def createGameData():
     # if road team is favoured
     else:
       rx = re.compile(r'([a-zA-Z\s.-]+)', re.I)
-      t = rx.search(teams[0]).group(0)[:3]
+      rx2 = re.compile(r'([EV].+)', re.I)
+      t = rx.search(teams[0]).group(0).strip()
+      t = teaminfo.abbreviations[t]
+
       line = '-'.join(odds[i].split('-', 2)[:2])
+
+      if rx2.search(line):
+        index = line.index(rx2.search(line).group(0))
+        line = line[0 : index]
+
       lineClean = '%s %s' % (t, line)
       data[i][matchups[i]] = lineClean
       print(lineClean)
@@ -93,6 +103,7 @@ gameData = createGameData()
 print(gameData)
 print('\n')
 print(byeteams.get_bye_teams(week_num))
+print(teaminfo.abbreviations)
 
 # open spreadsheet and write info
 def write_game_info():
@@ -123,4 +134,4 @@ def write_game_info():
   print('Done')
   wb.save('2018picksxlnew.xlsx')
 
-write_game_info()
+# write_game_info()
