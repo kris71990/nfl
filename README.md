@@ -1,6 +1,7 @@
 # NFL Weekly Tracker
 
 **Author: Kris**
+
 **Version: 2.0.0**
 
 ## About

@@ -54,6 +54,7 @@ def findOdds():
 
 matchups = findMatchups()
 odds = findOdds()
+byeData = byeteams.get_bye_teams(week_num)
 
 # creates dictionary from matchup/odds data 
 def createGameData():
@@ -102,7 +103,7 @@ print('\nGames for Week %s\n' % (week_num))
 gameData = createGameData()
 print(gameData)
 print('\n')
-print(byeteams.get_bye_teams(week_num))
+print(byeData)
 print(teaminfo.abbreviations)
 
 # open spreadsheet and write info
@@ -117,12 +118,17 @@ def write_game_info():
   write_matchup_num = 0
   start_row = 0
   start_week = sys.argv[1]
+  bye_row = 0
 
   for cell in sheet.columns[0]:
     if cell.value == start_week:
       start_row += 2
       for row_num in range(start_row, len(matchups) + start_row):
         game = sheet.cell(row=row_num, column=1)
+
+        if (row_num == (len(matchups) + start_row) - 1):
+          bye_row = row_num
+
         game.value = matchups[write_matchup_num]
 
         line = sheet.cell(row=row_num, column=2)
@@ -131,6 +137,15 @@ def write_game_info():
     else: 
       start_row += 1
   
+  bye = sheet.cell(row=bye_row+1, column=1)
+  bye.value = byeData
+
+  week = sheet.cell(row=bye_row+1, column=3)
+  week.value = 'Week =>'
+
+  total = sheet.cell(row=bye_row+2, column=3)
+  total.value = 'Total =>'
+
   print('Done')
   wb.save('2018picksxlnew.xlsx')
 
