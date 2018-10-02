@@ -3,6 +3,8 @@
 # team records from nflteams.py
 
 import requests, bs4, openpyxl, os, sys, re, nflteams, byeteams, teaminfo
+from dotenv import load_dotenv
+load_dotenv()
 
 week_num = sys.argv[1]
 
@@ -110,8 +112,8 @@ print(teaminfo.abbreviations)
 def write_game_info():
   print('\nWriting to spreadsheet...\n')
 
-  os.chdir('/Users/kris/Desktop')
-  wb = openpyxl.load_workbook('2018picksxl.xlsx')
+  os.chdir(os.getenv('DESKTOP'))
+  wb = openpyxl.load_workbook(os.getenv('EXCEL_FILE'))
   sheet = wb.get_sheet_by_name('Sheet 1')
 
   #find spreadsheet start row and write game info to appropriate cells
@@ -147,6 +149,6 @@ def write_game_info():
   total.value = 'Total =>'
 
   print('Done')
-  wb.save('2018picksxlnew.xlsx')
+  wb.save(os.getenv('EXCEL_FILE_NEW'))
 
 write_game_info()
