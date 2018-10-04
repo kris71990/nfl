@@ -106,7 +106,6 @@ gameData = createGameData()
 print(gameData)
 print('\n')
 print(byeData)
-print(teaminfo.abbreviations)
 
 # open spreadsheet and write info
 def write_game_info():
