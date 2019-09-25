@@ -15,9 +15,11 @@ def get_bye_teams(week):
   for each in bye_teams_html:
     team = each.getText()
     bye_teams.append(team)
-    
-  bye_string = '*Bye - '
 
+  return bye_teams
+
+def formatByes(bye_teams):
+  bye_string = '* Bye - '
   count = 0
   for each in range(0, len(bye_teams)):
     count += 1
@@ -25,5 +27,5 @@ def get_bye_teams(week):
       bye_string += bye_teams[each]
     else:
       bye_string += bye_teams[each] + ', '
-
   return bye_string
+  

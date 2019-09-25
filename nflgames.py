@@ -17,14 +17,18 @@ res = requests.get(url)
 res.raise_for_status()
 
 # find and parse soup for game matchups
-def findMatchups():
+def findMatchups(byes):
   soup = bs4.BeautifulSoup(res.text, 'html.parser')
-  teams_html = soup.select('.tabletext')
+  teams_html = soup.select('a[class=tabletext]')
   teams_raw = []
 
   for item in teams_html:
     team = item.getText()
     teams_raw.append(team)
+
+  # cut list down to accomodate extra games website is now displaying
+  total_active_teams = 32 - len(byes) 
+  teams_raw = teams_raw[:total_active_teams]
 
   # create the matchups from teams_raw list
   matchups = []
@@ -54,9 +58,10 @@ def findOdds():
   
   return odds
 
-matchups = findMatchups()
-odds = findOdds()
 byeData = byeteams.get_bye_teams(week_num)
+formattedByes = byeteams.formatByes(byeData)
+matchups = findMatchups(byeData)
+odds = findOdds()
 
 # creates dictionary from matchup/odds data 
 def createGameData():
@@ -105,7 +110,7 @@ print('\nGames for Week %s\n' % (week_num))
 gameData = createGameData()
 print(gameData)
 print('\n')
-print(byeData)
+print(formattedByes)
 
 # open spreadsheet and write info
 def write_game_info():
@@ -139,7 +144,7 @@ def write_game_info():
       start_row += 1
   
   bye = sheet.cell(row=bye_row+1, column=1)
-  bye.value = byeData
+  bye.value = formattedByes
 
   week = sheet.cell(row=bye_row+1, column=3)
   week.value = 'Week =>'
