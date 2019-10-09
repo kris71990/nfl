@@ -8,8 +8,8 @@ load_dotenv()
 
 week_num = sys.argv[1]
 
-if isinstance(week_num, str):
-   week_num = week_num.split(' ')[1]
+if 'Week' in week_num:
+  week_num = week_num.split(' ')[1]
 
 # get weekly matchup data
 url = 'http://www.vegasinsider.com/nfl/odds/las-vegas/'
