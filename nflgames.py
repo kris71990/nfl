@@ -123,7 +123,10 @@ def write_game_info():
   #find spreadsheet start row and write game info to appropriate cells
   write_matchup_num = 0
   start_row = 0
-  start_week = sys.argv[1]
+  if 'Week' not in week_num:
+    start_week = 'Week ' + week_num
+  else:
+    start_week = week_num
   bye_row = 0
 
   for cell in sheet.columns[0]:
