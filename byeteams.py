@@ -19,6 +19,9 @@ def get_bye_teams(week):
   return bye_teams
 
 def formatByes(bye_teams):
+  if len(bye_teams) is 0: 
+    return None
+
   bye_string = '* Bye - '
   count = 0
   for each in range(0, len(bye_teams)):

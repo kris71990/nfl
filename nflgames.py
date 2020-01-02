@@ -2,7 +2,7 @@
 # gets nfl weekly matchups and enters them into spreadsheet along with
 # team records from nflteams.py
 
-import requests, bs4, openpyxl, os, sys, re, nflteams, byeteams, teaminfo
+import requests, bs4, openpyxl, os, sys, re, nflteams, byeteams, teaminfo, weekInfo
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -124,7 +124,10 @@ def write_game_info():
   write_matchup_num = 0
   start_row = 0
   if 'Week' not in week_num:
-    start_week = 'Week ' + week_num
+    if (int(week_num) > 17):
+      start_week = weekInfo.playoff_week_titles[week_num]
+    else:
+      start_week = 'Week ' + week_num
   else:
     start_week = week_num
   bye_row = 0
@@ -147,7 +150,8 @@ def write_game_info():
       start_row += 1
   
   bye = sheet.cell(row=bye_row+1, column=1)
-  bye.value = formattedByes
+  if formattedByes is not None:
+    bye.value = formattedByes
 
   week = sheet.cell(row=bye_row+1, column=3)
   week.value = 'Week =>'
