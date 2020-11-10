@@ -21,7 +21,7 @@ abbreviations = {
   'Seattle' : 'Sea',
   'Arizona' : 'Az',
   'Cleveland' : 'Cle',
-  'Oakland' : 'Oak',
+  'Las Vegas' : 'LV',
   'San Francisco' : 'SF',
   'L.A. Chargers' : 'LAC',
   'L.A. Rams' : 'LAR',
