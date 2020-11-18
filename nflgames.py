@@ -15,10 +15,10 @@ if 'Week' in week_num:
 url = 'http://www.vegasinsider.com/nfl/odds/las-vegas/'
 res = requests.get(url)
 res.raise_for_status()
+soup = bs4.BeautifulSoup(res.text, 'html.parser')
 
 # find and parse soup for game matchups
 def findMatchups(byes):
-  soup = bs4.BeautifulSoup(res.text, 'html.parser')
   teams_html = soup.select('a[class=tabletext]')
   teams_raw = []
 
@@ -47,15 +47,24 @@ def findMatchups(byes):
 
 # finds odds soup and parses it to find the VI consensus for every matchup
 def findOdds():
-  soup = bs4.BeautifulSoup(res.text, 'html.parser')
-  odds_html = soup.findAll('a', class_=['cellTextNorm', 'cellTextHot'])
+  odds_html = soup.findAll('td', class_=['cellTextNorm', 'cellTextHot'])
   odds = []
 
-  for x in range(1, len(odds_html), 9):
-    game_odd = odds_html[x].find('br').getText()
-    game_odd = game_odd.replace('\t', '').replace('\n', '').replace('\xa0', '')
-    odds.append(game_odd)
-  
+  for x in range(2, len(odds_html), 10):
+    game_odd_text = odds_html[x].find('br').getText()
+    game_odd = game_odd_text.replace('\t', '').replace('\n', '').replace('\xa0', '')
+
+    # find if home or road team is favored
+    team_favored_odd = {}
+    if (game_odd.startswith('-')): # road
+      parsed_line = game_odd.split('-', 2)[1]
+      team_favored_odd['r'] = '-' + re.split('EV', parsed_line)[0]
+      odds.append(team_favored_odd)
+    else: # home
+      parsed_line = game_odd.split('-10', 1)[1].split('-')[1]
+      team_favored_odd['h'] = '-' + re.split('EV', parsed_line)[0]
+      odds.append(team_favored_odd)
+
   return odds
 
 byeData = byeteams.get_bye_teams(week_num)
@@ -73,34 +82,20 @@ def createGameData():
 
   for i in keys:
     teams = matchups[i].split(' at ')
+    rx = re.compile(r'([a-zA-Z\s.-]+)', re.I)
 
     # if home team is favoured
-    if re.search('u', odds[i].split('-', 2)[0]):
-      rx = re.compile(r'([a-zA-Z\s.-]+)', re.I)
-      t = rx.search(teams[1]).group(0).strip()
-      t = teaminfo.abbreviations[t]
-
-      line = '-'.join(odds[i].split('-', 2)[2:]).split('-')[0].replace('EV', '')
-      lineClean = '%s -%s' % (t, line)
-      data[i][matchups[i]] = lineClean
-      print(lineClean)
-    
-    # if road team is favoured
+    if ('h' in odds[i]):
+      stripped_team = rx.search(teams[1]).group(0).strip()
+      team_abbreviation = teaminfo.abbreviations[stripped_team]
+      line = '%s %s' % (team_abbreviation, odds[i]['h'])
     else:
-      rx = re.compile(r'([a-zA-Z\s.-]+)', re.I)
-      rx2 = re.compile(r'([EV].+)', re.I)
-      t = rx.search(teams[0]).group(0).strip()
-      t = teaminfo.abbreviations[t]
+      stripped_team = rx.search(teams[0]).group(0).strip()
+      team_abbreviation = teaminfo.abbreviations[stripped_team]
+      line = '%s %s' % (team_abbreviation, odds[i]['r'])
 
-      line = '-'.join(odds[i].split('-', 2)[:2])
-
-      if rx2.search(line):
-        index = line.index(rx2.search(line).group(0))
-        line = line[0 : index]
-
-      lineClean = '%s %s' % (t, line)
-      data[i][matchups[i]] = lineClean
-      print(lineClean)
+    data[i][matchups[i]] = line
+    print(line)
 
   print('\n')
   return data
