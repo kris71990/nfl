@@ -23,7 +23,7 @@ for item in teams_html:
     team5 = team4[4:]
     teams_raw.append(team5)
   elif delete_stuff % 3 == 1:
-    team6 = team4[:5]
+    team6 = team4.split(' ')[0]
     teams_raw.append(team6)
   else:
     del team4

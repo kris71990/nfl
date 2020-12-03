@@ -55,15 +55,22 @@ def findOdds():
     game_odd = game_odd_text.replace('\t', '').replace('\n', '').replace('\xa0', '')
 
     # find if home or road team is favored
-    team_favored_odd = {}
-    if (game_odd.startswith('-')): # road
-      parsed_line = game_odd.split('-', 2)[1]
-      team_favored_odd['r'] = '-' + re.split('EV', parsed_line)[0]
-      odds.append(team_favored_odd)
-    else: # home
-      parsed_line = game_odd.split('-10', 1)[1].split('-')[1]
-      team_favored_odd['h'] = '-' + re.split('EV', parsed_line)[0]
-      odds.append(team_favored_odd)
+    if (len(game_odd.split('u')) > 1):
+      team_favored_odd = {}
+
+      if ('PK' in game_odd): # neither
+        team_favored_odd['n'] = 'Pick'
+        odds.append(team_favored_odd)
+        continue
+
+      if (game_odd.startswith('-')): # road
+        parsed_line = game_odd.split('-', 2)[1]
+        team_favored_odd['r'] = '-' + re.split('EV', parsed_line)[0]
+        odds.append(team_favored_odd)
+      else: # home
+        parsed_line = game_odd.split('-10', 1)[1].split('-')[1]
+        team_favored_odd['h'] = '-' + re.split('EV', parsed_line)[0]
+        odds.append(team_favored_odd)
 
   return odds
 
@@ -84,15 +91,16 @@ def createGameData():
     teams = matchups[i].split(' at ')
     rx = re.compile(r'([a-zA-Z\s.-]+)', re.I)
 
-    # if home team is favoured
-    if ('h' in odds[i]):
+    if ('h' in odds[i]): # if home team is favoured
       stripped_team = rx.search(teams[1]).group(0).strip()
       team_abbreviation = teaminfo.abbreviations[stripped_team]
       line = '%s %s' % (team_abbreviation, odds[i]['h'])
-    else:
+    elif ('r' in odds[i]): # if road team is favoured
       stripped_team = rx.search(teams[0]).group(0).strip()
       team_abbreviation = teaminfo.abbreviations[stripped_team]
       line = '%s %s' % (team_abbreviation, odds[i]['r'])
+    else:
+      line = 'Pick'
 
     data[i][matchups[i]] = line
     print(line)
