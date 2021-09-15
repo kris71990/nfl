@@ -1,7 +1,7 @@
 # byeteams.py
 # accesses weekly schedule and identifies bye teams
 
-import requests, bs4, sys
+import requests, bs4
 
 def get_bye_teams(week):
   url = 'http://www.espn.com/nfl/schedule/_/week/' + week
