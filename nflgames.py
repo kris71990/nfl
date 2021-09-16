@@ -48,6 +48,7 @@ def findMatchups(byes):
 # finds odds soup and parses it to find the VI consensus for every matchup
 def findOdds():
   odds_html = soup.findAll('td', class_=['cellTextNorm', 'cellTextHot'])
+
   odds = []
 
   for x in range(8, len(odds_html), 9):
@@ -119,7 +120,7 @@ print(formattedByes)
 def write_game_info():
   print('\nWriting to spreadsheet...\n')
 
-  os.chdir(os.getenv('DESKTOP'))
+  os.chdir(os.getenv('PATH'))
   wb = openpyxl.load_workbook(os.getenv('EXCEL_FILE'))
   sheet = wb.get_sheet_by_name('Sheet 1')
 

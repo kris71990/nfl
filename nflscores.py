@@ -41,7 +41,7 @@ def write_scores(week):
   print('Week 1 results:\n')
   scores = get_scores(week)
 
-  os.chdir(os.getenv('DESKTOP'))
+  os.chdir(os.getenv('PATH'))
   wb = openpyxl.load_workbook(os.getenv('EXCEL_FILE'))
   sheet = wb.get_sheet_by_name('Sheet 1')
 
