@@ -162,7 +162,7 @@ def write_game_info():
   total = sheet.cell(row=bye_row+2, column=3)
   total.value = 'Total =>'
 
-  print('Done')
   wb.save(os.getenv('EXCEL_FILE_NEW'))
+  print('Done')
 
 write_game_info()

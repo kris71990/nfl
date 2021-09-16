@@ -21,20 +21,25 @@ def get_scores(week):
 
   for each in scores_raw:
     score = each.getText()
+    print(score)
     score_split = score.split(' ')
+    # if tie *** may be buggy ***
     if (score_split[1].strip(', ') == score_split[3]):
       scores[score_split[0] + '-' + scores[score_split[2]]] = '%s-%s' % (score_split[1].strip(','), score_split[3])
     else:
-      scores[score_split[0]] = '%s-%s' % (score_split[1].strip(','), score_split[3])
+      # if overtime, add OT to string
+      if (len(score_split) > 4):
+        scores[score_split[0]] = '%s-%s %s' % (score_split[1].strip(','), score_split[3], score_split[4])
+      else:
+        scores[score_split[0]] = '%s-%s' % (score_split[1].strip(','), score_split[3])
 
-  print(scores)
   return scores
 
 def write_scores(week):
   print('\nWriting to spreadsheet...\n')
 
+  print('Week 1 results:\n')
   scores = get_scores(week)
-  print(scores)
 
   os.chdir(os.getenv('DESKTOP'))
   wb = openpyxl.load_workbook(os.getenv('EXCEL_FILE'))
@@ -55,7 +60,7 @@ def write_scores(week):
     if cell.value == start_week:
       start_row += 2
       for row_num in range(start_row, len(scores) + start_row):
-        score_cell = sheet.cell(row=row_num, column=2)
+        score_cell = sheet.cell(row=row_num, column=3)
         matchup_cell = sheet.cell(row=row_num, column=1)
         matchup_cell_text = matchup_cell.value
 
@@ -73,7 +78,7 @@ def write_scores(week):
     else: 
       start_row += 1
 
-  print('Done')
   wb.save(os.getenv('EXCEL_FILE_NEW'))
+  print('Done')
 
 write_scores(week_num)
