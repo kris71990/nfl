@@ -50,7 +50,7 @@ def findOdds():
   odds_html = soup.findAll('td', class_=['cellTextNorm', 'cellTextHot'])
   odds = []
 
-  for x in range(2, len(odds_html), 10):
+  for x in range(8, len(odds_html), 9):
     game_odd_text = odds_html[x].find('br').getText()
     game_odd = game_odd_text.replace('\t', '').replace('\n', '').replace('\xa0', '')
 
