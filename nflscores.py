@@ -1,7 +1,7 @@
 # nflscores.py 
 # gets nfl weekly scores and enters them into spreadsheet 
 
-import requests, bs4, openpyxl, os, sys, re, teaminfo, weekInfo
+import requests, bs4, openpyxl, os, sys, re, teaminfo, weekInfo, tallyscores
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -71,12 +71,16 @@ def write_scores(week):
         team2abbr = teaminfo.abbreviations[teams[1][3:]].upper()
         
         if (team1abbr in scores):
-          score_cell.value = '%s %s' % (team1abbr, scores[team1abbr])
+          score = '%s %s' % (team1abbr, scores[team1abbr])
+          score_cell.value = score
         elif (team2abbr in scores):
-          score_cell.value = '%s %s' % (team2abbr, scores[team2abbr])
+          score = '%s %s' % (team2abbr, scores[team2abbr])
+          score_cell.value = score
+        # call color_fill(ws, score, row_num) in tallyscores.py
         write_score_index += 1       
     else: 
       start_row += 1
+
 
   wb.save(os.getenv('EXCEL_FILE_NEW'))
   print('Done')
