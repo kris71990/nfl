@@ -2,7 +2,9 @@
 # gets nfl weekly matchups and enters them into spreadsheet along with
 # team records from nflteams.py
 
-import requests, bs4, openpyxl, os, sys, re, nflteams, byeteams, teaminfo, weekInfo
+import requests, bs4, os, sys, re, nflteams, byeteams, teaminfo, weekInfo
+from openpyxl import load_workbook
+from openpyxl.styles import Alignment
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -120,8 +122,8 @@ print(formattedByes)
 def write_game_info():
   print('\nWriting to spreadsheet...\n')
 
-  os.chdir(os.getenv('PATH'))
-  wb = openpyxl.load_workbook(os.getenv('EXCEL_FILE'))
+  os.chdir(os.getenv('LOCATION'))
+  wb = load_workbook(os.getenv('EXCEL_FILE'))
   sheet = wb.get_sheet_by_name('Sheet 1')
 
   #find spreadsheet start row and write game info to appropriate cells
@@ -159,9 +161,11 @@ def write_game_info():
 
   week = sheet.cell(row=bye_row+1, column=3)
   week.value = 'Week =>'
+  week.alignment = Alignment(horizontal='right')
 
   total = sheet.cell(row=bye_row+2, column=3)
   total.value = 'Total =>'
+  total.alignment = Alignment(horizontal='right')
 
   wb.save(os.getenv('EXCEL_FILE_NEW'))
   print('Done')

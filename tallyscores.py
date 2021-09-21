@@ -1,7 +1,7 @@
-from openpyxl import PatternFill, Font
+from openpyxl.styles import PatternFill, Font
 
 def color_fill(ws, score, row_num):
-  line = ws.cell(row=row_num, column=2).split(' ')
+  line = ws.cell(row=row_num, column=2).value.split(' ')
   score_split = score.split(' ')
 
   # cycle through four pick columns; odd = common, even = spread
@@ -9,21 +9,21 @@ def color_fill(ws, score, row_num):
     pick_cell = ws.cell(row=row_num, column=col)
 
     # common pick
-    if pick_cell % 2 == 1:
-      pick_cell_split = pick_cell.split(' ')
+    if col % 2 == 1:
+      pick_cell_split = pick_cell.value.split(' ')
 
       # if pick team == winning team, color cell green
-      if pick_cell_split[0] == score_split[0]:
-        pick_cell.fill = PatternFill("solid", fgColor="009051")
+      if pick_cell_split[0].upper() == score_split[0]:
+        pick_cell.fill = PatternFill("solid", fgColor="009051") # green
         spread = score_split[1].split('-')
 
         # if game spread == pick spread, spread font == yellow
-        if spread[0] - spread[1] == pick_cell_split[2]:
-          pick_cell.font = Font(color="FFFB00")
+        if int(spread[0]) - int(spread[1]) == int(pick_cell_split[2]):
+          pick_cell.font = Font(color="FFFB00") # yellow
       # else color cell red    
       else:
-        pick_cell.fill = PatternFill("solid", fgColor="FF7E79")
+        pick_cell.fill = PatternFill("solid", fgColor="FF7E79") # red
 
-    # against line
+    # TODO - against line
     else:
-      return
+      continue
