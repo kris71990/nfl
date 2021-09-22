@@ -4,7 +4,7 @@
 
 import requests, bs4, os, sys, re, nflteams, byeteams, teaminfo, weekInfo
 from openpyxl import load_workbook
-from openpyxl.styles import Alignment
+from openpyxl.styles import Alignment, Font
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -162,10 +162,12 @@ def write_game_info():
   week = sheet.cell(row=bye_row+1, column=3)
   week.value = 'Week =>'
   week.alignment = Alignment(horizontal='right')
+  week.font = Font(italic=True)
 
   total = sheet.cell(row=bye_row+2, column=3)
   total.value = 'Total =>'
   total.alignment = Alignment(horizontal='right')
+  week.font = Font(italic=True)
 
   wb.save(os.getenv('EXCEL_FILE_NEW'))
   print('Done')
