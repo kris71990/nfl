@@ -1,15 +1,11 @@
 # byeteams.py
 # accesses weekly schedule and identifies bye teams
 
-import requests, bs4
+from assets import soup
 
 def get_bye_teams(week):
-  url = 'http://www.espn.com/nfl/schedule/_/week/' + week
-  res = requests.get(url)
-  res.raise_for_status()
-
-  soup = bs4.BeautifulSoup(res.text, 'html.parser')
-  bye_teams_html = soup.select('.odd.byeweek a span')
+  schedule_soup = soup.get_scores_soup(week)
+  bye_teams_html = schedule_soup.select('.odd.byeweek a span')
   bye_teams = []
 
   for each in bye_teams_html:
@@ -18,7 +14,7 @@ def get_bye_teams(week):
 
   return bye_teams
 
-def formatByes(bye_teams):
+def format_byes(bye_teams):
   if len(bye_teams) is 0: 
     return None
 

@@ -23,14 +23,10 @@ def color_fill(ws, score, row_num):
       # else color cell red    
       else:
         pick_cell.fill = PatternFill("solid", fgColor="FF7E79") # red
-
-    # TODO - against line
+    # against line
     else:
       line = ws.cell(row=row_num, column=2).value.upper().split(' -')
       spread = score_split[1].split('-')
-      print(score_split)
-      print(line)
-      print(spread)
 
       try:
         line_num = int(line[1])
@@ -39,18 +35,18 @@ def color_fill(ws, score, row_num):
 
       if score_split[0] == line[0] and (int(spread[0]) - int(spread[1])) > line_num:
         team = score_split[0]
-        if team == pick_cell_text:
+        if team == pick_cell_text.upper():
           pick_cell.fill = PatternFill("solid", fgColor="009051") # green
         else:
           pick_cell.fill = PatternFill("solid", fgColor="FF7E79") # red
       elif score_split[0] != line[0]:
         team = score_split[0]
-        if team == pick_cell_text:
+        if team == pick_cell_text.upper():
           pick_cell.fill = PatternFill("solid", fgColor="009051") # green
         else: 
           pick_cell.fill = PatternFill("solid", fgColor="FF7E79") # red
       else:
-        if pick_cell_text != line[0]:
+        if pick_cell_text.upper() != line[0]:
           pick_cell.fill = PatternFill("solid", fgColor="009051") # green
         else:
           pick_cell.fill = PatternFill("solid", fgColor="FF7E79") # red

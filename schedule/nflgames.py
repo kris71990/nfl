@@ -2,25 +2,13 @@
 # gets nfl weekly matchups and enters them into spreadsheet along with
 # team records from nflteams.py
 
-import requests, bs4, os, sys, re, nflteams, byeteams, teaminfo, weekInfo
+import os, re, schedule.nflteams, schedule.byeteams
+from assets import weekInfo, teaminfo, soup
 from openpyxl import load_workbook
 from openpyxl.styles import Alignment, Font
-from dotenv import load_dotenv
-load_dotenv()
-
-week_num = sys.argv[1]
-
-if 'Week' in week_num:
-  week_num = week_num.split(' ')[1]
-
-# get weekly matchup data
-url = 'http://www.vegasinsider.com/nfl/odds/las-vegas/'
-res = requests.get(url)
-res.raise_for_status()
-soup = bs4.BeautifulSoup(res.text, 'html.parser')
 
 # find and parse soup for game matchups
-def findMatchups(byes):
+def find_matchups(byes, soup):
   teams_html = soup.select('a[class=tabletext]')
   teams_raw = []
 
@@ -37,7 +25,7 @@ def findMatchups(byes):
   matchup_num = 0
   matchup_num_2 = matchup_num + 1
   num_games = int(len(teams_raw) / 2)
-  dict = nflteams.team_records_dict 
+  dict = schedule.nflteams.get_team_records()
 
   for i in range(0, num_games):
     matchups.append(teams_raw[matchup_num] + ' ' + dict.get(teams_raw[matchup_num]) + \
@@ -48,9 +36,8 @@ def findMatchups(byes):
   return matchups
 
 # finds odds soup and parses it to find the VI consensus for every matchup
-def findOdds():
+def find_odds(soup):
   odds_html = soup.findAll('td', class_=['cellTextNorm', 'cellTextHot'])
-
   odds = []
 
   for x in range(8, len(odds_html), 9):
@@ -77,13 +64,8 @@ def findOdds():
 
   return odds
 
-byeData = byeteams.get_bye_teams(week_num)
-formattedByes = byeteams.formatByes(byeData)
-matchups = findMatchups(byeData)
-odds = findOdds()
-
 # creates dictionary from matchup/odds data 
-def createGameData():
+def create_game_data(matchups, odds):
   data = {}
   keys = range(len(matchups))
 
@@ -111,15 +93,8 @@ def createGameData():
   print('\n')
   return data
 
-# Print all weekly game information to console
-print('\nGames for Week %s\n' % (week_num))
-gameData = createGameData()
-print(gameData)
-print('\n')
-print(formattedByes)
-
 # open spreadsheet and write info
-def write_game_info():
+def write_game_info(week, matchups, game_data, formatted_byes):
   print('\nWriting to spreadsheet...\n')
 
   os.chdir(os.getenv('LOCATION'))
@@ -129,13 +104,10 @@ def write_game_info():
   #find spreadsheet start row and write game info to appropriate cells
   write_matchup_num = 0
   start_row = 0
-  if 'Week' not in week_num:
-    if (int(week_num) > 17):
-      start_week = weekInfo.playoff_week_titles[week_num]
-    else:
-      start_week = 'Week ' + week_num
+  if (int(week) > 17):
+    start_week = weekInfo.playoff_week_titles[week]
   else:
-    start_week = week_num
+    start_week = 'Week ' + week
   bye_row = 0
 
   for cell in sheet.columns[0]:
@@ -150,26 +122,41 @@ def write_game_info():
         game.value = matchups[write_matchup_num]
 
         line = sheet.cell(row=row_num, column=2)
-        line.value = gameData[write_matchup_num][matchups[write_matchup_num]]
+        line.value = game_data[write_matchup_num][matchups[write_matchup_num]]
         write_matchup_num += 1       
     else: 
       start_row += 1
   
   bye = sheet.cell(row=bye_row+1, column=1)
-  if formattedByes is not None:
-    bye.value = formattedByes
+  if formatted_byes is not None:
+    bye.value = formatted_byes
 
   week = sheet.cell(row=bye_row+1, column=3)
   week.value = 'Week =>'
   week.alignment = Alignment(horizontal='right')
-  week.font = Font(italic=True)
+  week.font = Font(name='Times New Roman', size=12, italic=True)
 
   total = sheet.cell(row=bye_row+2, column=3)
   total.value = 'Total =>'
   total.alignment = Alignment(horizontal='right')
-  week.font = Font(italic=True)
+  week.font = Font(name='Times New Roman', size=12, italic=True)
 
   wb.save(os.getenv('EXCEL_FILE_NEW'))
+  return
+
+def init(week):
+  odds_soup = soup.get_odds_soup()
+  bye_data = schedule.byeteams.get_bye_teams(week)
+  formatted_byes = schedule.byeteams.format_byes(bye_data)
+  matchups = find_matchups(bye_data, odds_soup)
+  odds = find_odds(odds_soup)
+
+  # Print all weekly game information to console
+  print('\nGames for Week %s\n' % (week))
+  game_data = create_game_data(matchups, odds)
+  print(game_data)
+  print('\n')
+  print(formatted_byes)
+  write_game_info(week, matchups, game_data, formatted_byes)
   print('Done')
 
-write_game_info()

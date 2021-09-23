@@ -46,22 +46,35 @@ The `PATH` is the location on your computer from which to load and save the exce
 
 `nflgames.py` - Finds all matchup data for the upcoming week and enters it into an excel spreadsheet. For the data to be entered, there must be a cell in a column of the spreadsheet that says 'Week X', where X is the integer of the upcoming week.
 
-Running the following will collect and enter matchup data for Week 2:
-
-    python3 nflgames.py 'Week 2'
-    OR
-    python3 nflgames.py 2
-
-For best results dependent on how *Vegas Insider* is structured, this command should be run after Week 1 is complete and before Week 2 begins (Tuesday or Wednesday on usual weeks).
-
-
 `nflscores.py` - Records all scores from the previous week and enters them into the spreadsheet beside the matchup columns (entered by `nflgames.py`).
 
-Running the following will enter the scores from Week 1:
+`tallyscores.py` - Analyzes scores and user picks and color codes cells depending on correct/incorrect picks. Is run when invoking `nflscores.py` (see above)
 
-     python3 nflscores.py 'Week 1'
+
+There are two actions to take.
+1. Schedule
+Ex. Running the following will enter the schedule and betting lines for Week 2:
+
+     python nfl.py schedule 'Week 2'
      OR
-     python3 nflscores.py 1
+     python nfl.py schedule 2
+
+2. Scores
+Ex. Running the following will enter the scores from Week 1:
+
+     python nfl.py scores 'Week 1'
+     OR
+     python nfl.py scores 1
+
+For best results dependent on how *Vegas Insider* is structured, the `Schedule` action should be run after the previous week is complete and before the next week begins (Tuesday or Wednesday on usual weeks). The `Scores` action should be run similarly - after all games have completed for the week and before the next week's games begin.
 
 
 ### Demo
+
+<image src="assets/nfl-demo.png" width=500>
+
+This is an example spreadsheet formatted for the application. 
+
+Columns A and B are where matchups and betting lines are entered through the `Schedule` action. 
+
+Column C is for final scores. Columns H-K are for user picks and are color coded depending on game results. This is accomplished with the `Scores` action.

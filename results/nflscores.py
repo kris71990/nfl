@@ -1,24 +1,14 @@
 # nflscores.py 
 # gets nfl weekly scores and enters them into spreadsheet 
 
-import requests, bs4, os, sys, re, teaminfo, weekInfo, tallyscores
+import os, re, results.tallyscores
+from assets import teaminfo, weekInfo, soup
 from openpyxl import load_workbook
 from openpyxl.styles import Font, Alignment
-from dotenv import load_dotenv
-load_dotenv()
-
-week_num = sys.argv[1]
-
-if 'Week' in week_num:
-  week_num = week_num.split(' ')[1]
 
 def get_scores(week):
-  url = 'http://www.espn.com/nfl/schedule/_/week/' + week
-  res = requests.get(url)
-  res.raise_for_status()
-
-  soup = bs4.BeautifulSoup(res.text, 'html.parser')
-  scores_raw = soup.find_all('a', { 'name': '&lpos=nfl:schedule:score' })
+  scores_soup = soup.get_scores_soup(week)
+  scores_raw = scores_soup.find_all('a', { 'name': '&lpos=nfl:schedule:score' })
   scores = {}
 
   for each in scores_raw:
@@ -50,13 +40,10 @@ def write_scores(week):
   # find spreadsheet start row and write scores to appropriate cells
   write_score_index = 0
   start_row = 0
-  if 'Week' not in week_num:
-    if (int(week_num) > 17):
-      start_week = weekInfo.playoff_week_titles[week_num]
-    else:
-      start_week = 'Week ' + week_num
+  if int(week) > 17:
+    start_week = weekInfo.playoff_week_titles[week]
   else:
-    start_week = week_num
+    start_week = 'Week ' + week
 
   for cell in sheet.columns[0]:
     if cell.value == start_week:
@@ -82,12 +69,10 @@ def write_scores(week):
           score_cell.value = score
           score_cell.font = Font(name='Times New Roman', size=12)
           score_cell.alignment = Alignment(horizontal='center', vertical='center')
-        tallyscores.color_fill(sheet, score, row_num)
+        results.tallyscores.color_fill(sheet, score, row_num)
         write_score_index += 1       
     else: 
       start_row += 1
 
   wb.save(os.getenv('EXCEL_FILE_NEW'))
   print('Done')
-
-write_scores(week_num)
