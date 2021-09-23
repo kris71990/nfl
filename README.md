@@ -50,9 +50,11 @@ The `PATH` is the location on your computer from which to load and save the exce
 
 `tallyscores.py` - Analyzes scores and user picks and color codes cells depending on correct/incorrect picks. Is run when invoking `nflscores.py` (see above)
 
+---
 
 There are two actions to take.
 1. Schedule
+
 Ex. Running the following will enter the schedule and betting lines for Week 2:
 
      python nfl.py schedule 'Week 2'
@@ -60,6 +62,7 @@ Ex. Running the following will enter the schedule and betting lines for Week 2:
      python nfl.py schedule 2
 
 2. Scores
+
 Ex. Running the following will enter the scores from Week 1:
 
      python nfl.py scores 'Week 1'
@@ -71,7 +74,7 @@ For best results dependent on how *Vegas Insider* is structured, the `Schedule` 
 
 ### Demo
 
-<image src="assets/nfl-demo.png" width=500>
+<image src="assets/nfl-demo.png" width=600>
 
 This is an example spreadsheet formatted for the application. 
 
