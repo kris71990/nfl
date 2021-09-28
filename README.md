@@ -50,6 +50,7 @@ The `PATH` is the location on your computer from which to load and save the exce
 
 `tallyscores.py` - Analyzes scores and user picks and color codes cells depending on correct/incorrect picks. Is run when invoking `nflscores.py` (see above)
 
+
 ---
 
 There are two actions to take.

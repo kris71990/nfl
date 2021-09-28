@@ -2,9 +2,9 @@
 # gets nfl weekly matchups and enters them into spreadsheet along with
 # team records from nflteams.py
 
-import os, re, schedule.nflteams, schedule.byeteams
+import re, schedule.nflteams, schedule.byeteams
 from assets import weekInfo, teaminfo, soup
-from openpyxl import load_workbook
+from spreadsheet import actions
 from openpyxl.styles import Alignment, Font
 
 # find and parse soup for game matchups
@@ -94,12 +94,8 @@ def create_game_data(matchups, odds):
   return data
 
 # open spreadsheet and write info
-def write_game_info(week, matchups, game_data, formatted_byes):
+def write_game_info(ss, week, matchups, game_data, formatted_byes):
   print('\nWriting to spreadsheet...\n')
-
-  os.chdir(os.getenv('LOCATION'))
-  wb = load_workbook(os.getenv('EXCEL_FILE'))
-  sheet = wb.get_sheet_by_name('Sheet 1')
 
   #find spreadsheet start row and write game info to appropriate cells
   write_matchup_num = 0
@@ -110,41 +106,39 @@ def write_game_info(week, matchups, game_data, formatted_byes):
     start_week = 'Week ' + week
   bye_row = 0
 
-  for cell in sheet.columns[0]:
+  for cell in ss['sheet'].columns[0]:
     if cell.value == start_week:
       start_row += 2
       for row_num in range(start_row, len(matchups) + start_row):
-        game = sheet.cell(row=row_num, column=1)
+        game = ss['sheet'].cell(row=row_num, column=1)
 
         if (row_num == (len(matchups) + start_row) - 1):
           bye_row = row_num
 
         game.value = matchups[write_matchup_num]
 
-        line = sheet.cell(row=row_num, column=2)
+        line = ss['sheet'].cell(row=row_num, column=2)
         line.value = game_data[write_matchup_num][matchups[write_matchup_num]]
         write_matchup_num += 1       
     else: 
       start_row += 1
   
-  bye = sheet.cell(row=bye_row+1, column=1)
+  bye = ss['sheet'].cell(row=bye_row+1, column=1)
   if formatted_byes is not None:
     bye.value = formatted_byes
 
-  week = sheet.cell(row=bye_row+1, column=3)
+  week = ss['sheet'].cell(row=bye_row+1, column=3)
   week.value = 'Week =>'
   week.alignment = Alignment(horizontal='right')
   week.font = Font(name='Times New Roman', size=12, italic=True)
 
-  total = sheet.cell(row=bye_row+2, column=3)
+  total = ss['sheet'].cell(row=bye_row+2, column=3)
   total.value = 'Total =>'
   total.alignment = Alignment(horizontal='right')
   week.font = Font(name='Times New Roman', size=12, italic=True)
-
-  wb.save(os.getenv('EXCEL_FILE_NEW'))
   return
 
-def init(week):
+def init(ss, week):
   odds_soup = soup.get_odds_soup()
   bye_data = schedule.byeteams.get_bye_teams(week)
   formatted_byes = schedule.byeteams.format_byes(bye_data)
@@ -157,6 +151,6 @@ def init(week):
   print(game_data)
   print('\n')
   print(formatted_byes)
-  write_game_info(week, matchups, game_data, formatted_byes)
-  print('Done')
+  write_game_info(ss, week, matchups, game_data, formatted_byes)
+  return
 

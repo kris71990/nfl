@@ -1,7 +1,7 @@
 # nflscores.py 
 # gets nfl weekly scores and enters them into spreadsheet 
 
-import os, re, results.tallyscores
+import re, results.tallyscores
 from assets import teaminfo, weekInfo, soup
 from openpyxl import load_workbook
 from openpyxl.styles import Font, Alignment
@@ -27,15 +27,10 @@ def get_scores(week):
 
   return scores
 
-def write_scores(week):
+def write_scores(ss, week):
   print('\nWriting to spreadsheet...\n')
-
-  print('Week 1 results:\n')
+  print('Week %s results:\n' % week)
   scores = get_scores(week)
-
-  os.chdir(os.getenv('LOCATION'))
-  wb = load_workbook(os.getenv('EXCEL_FILE'))
-  sheet = wb.get_sheet_by_name('Sheet 1')
 
   # find spreadsheet start row and write scores to appropriate cells
   write_score_index = 0
@@ -45,12 +40,12 @@ def write_scores(week):
   else:
     start_week = 'Week ' + week
 
-  for cell in sheet.columns[0]:
+  for cell in ss['sheet'].columns[0]:
     if cell.value == start_week:
       start_row += 2
       for row_num in range(start_row, len(scores) + start_row):
-        score_cell = sheet.cell(row=row_num, column=3)
-        matchup_cell = sheet.cell(row=row_num, column=1)
+        score_cell = ss['sheet'].cell(row=row_num, column=3)
+        matchup_cell = ss['sheet'].cell(row=row_num, column=1)
         matchup_cell_text = matchup_cell.value
 
         rx = re.compile(r'([a-zA-Z\s.]+)', re.I)
@@ -69,10 +64,8 @@ def write_scores(week):
           score_cell.value = score
           score_cell.font = Font(name='Times New Roman', size=12)
           score_cell.alignment = Alignment(horizontal='center', vertical='center')
-        results.tallyscores.color_fill(sheet, score, row_num)
+        results.tallyscores.color_fill(ss['sheet'], score, row_num)
         write_score_index += 1       
     else: 
       start_row += 1
-
-  wb.save(os.getenv('EXCEL_FILE_NEW'))
-  print('Done')
+  return

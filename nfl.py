@@ -1,6 +1,7 @@
 import sys
 from schedule import nflgames
 from results import nflscores
+from spreadsheet import actions
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -12,8 +13,17 @@ if 'Week' in week:
   week = week.split(' ')[1]
 
 if action == 'schedule':
-  nflgames.init(week)
+  ss = actions.load_spreadsheet()
+  nflgames.init(ss, week)
+  actions.save_spreadsheet(ss['wb'])
 elif action == 'scores':
-  nflscores.write_scores(week)
+  ss = actions.load_spreadsheet()
+  nflscores.write_scores(ss, week)
+
+  next_week = int(week) + 1
+  if next_week < 22:
+    nflgames.init(ss, str(next_week))
+
+  actions.save_spreadsheet(ss['wb'])
 else:
   print('Done')
