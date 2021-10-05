@@ -135,7 +135,7 @@ def write_game_info(ss, week, matchups, game_data, formatted_byes):
   total = ss['sheet'].cell(row=bye_row+2, column=3)
   total.value = 'Total =>'
   total.alignment = Alignment(horizontal='right')
-  week.font = Font(name='Times New Roman', size=12, italic=True)
+  total.font = Font(name='Times New Roman', size=12, italic=True)
   return
 
 def init(ss, week):

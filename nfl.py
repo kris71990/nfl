@@ -12,11 +12,7 @@ week = sys.argv[2]
 if 'Week' in week:
   week = week.split(' ')[1]
 
-if action == 'schedule':
-  ss = actions.load_spreadsheet()
-  nflgames.init(ss, week)
-  actions.save_spreadsheet(ss['wb'])
-elif action == 'scores':
+if action == 'scores+':
   ss = actions.load_spreadsheet()
   nflscores.write_scores(ss, week)
 
@@ -24,6 +20,14 @@ elif action == 'scores':
   if next_week < 22:
     nflgames.init(ss, str(next_week))
 
+  actions.save_spreadsheet(ss['wb'])
+elif action == 'schedule':
+  ss = actions.load_spreadsheet()
+  nflgames.init(ss, week)
+  actions.save_spreadsheet(ss['wb'])
+elif action == 'scores':
+  ss = actions.load_spreadsheet()
+  nflscores.write_scores(ss, week)
   actions.save_spreadsheet(ss['wb'])
 else:
   print('Done')
