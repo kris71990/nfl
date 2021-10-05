@@ -4,8 +4,7 @@
 
 import re, schedule.nflteams, schedule.byeteams
 from assets import weekInfo, teaminfo, soup
-from spreadsheet import actions
-from openpyxl.styles import Alignment, Font
+from openpyxl.styles import Alignment, Font, PatternFill
 
 # find and parse soup for game matchups
 def find_matchups(byes, soup):
@@ -41,7 +40,7 @@ def find_odds(soup):
   odds = []
 
   for x in range(8, len(odds_html), 9):
-    game_odd_text = odds_html[x].find('br').getText()
+    game_odd_text = odds_html[x].get_text()
     game_odd = game_odd_text.replace('\t', '').replace('\n', '').replace('\xa0', '')
 
     # find if home or road team is favored
@@ -93,6 +92,22 @@ def create_game_data(matchups, odds):
   print('\n')
   return data
 
+def write_footer_header(ss, footer_row, week):
+  if (int(week) + 1 > 17):
+    next_week = weekInfo.playoff_week_titles[week]
+  else:
+    next_week = 'Week ' + str(int(week) + 1)
+  
+  for row in ss['sheet'].iter_rows(min_row=footer_row, max_row=footer_row):
+    for cell in row:
+      cell.fill = PatternFill("solid", fgColor="43889D")
+  
+  next_week_cell = ss['sheet'].cell(row=footer_row + 1, column=1)
+  next_week_cell.value = next_week
+  next_week_cell.font = Font(name='Times New Roman', size=14, bold=True)
+  next_week_cell.alignment = Alignment(horizontal='center')
+  return
+
 # open spreadsheet and write info
 def write_game_info(ss, week, matchups, game_data, formatted_byes):
   print('\nWriting to spreadsheet...\n')
@@ -106,7 +121,7 @@ def write_game_info(ss, week, matchups, game_data, formatted_byes):
     start_week = 'Week ' + week
   bye_row = 0
 
-  for cell in ss['sheet'].columns[0]:
+  for cell in ss['sheet']['A']:
     if cell.value == start_week:
       start_row += 2
       for row_num in range(start_row, len(matchups) + start_row):
@@ -123,19 +138,22 @@ def write_game_info(ss, week, matchups, game_data, formatted_byes):
     else: 
       start_row += 1
   
-  bye = ss['sheet'].cell(row=bye_row+1, column=1)
+  bye = ss['sheet'].cell(row=bye_row + 1, column=1)
   if formatted_byes is not None:
     bye.value = formatted_byes
 
-  week = ss['sheet'].cell(row=bye_row+1, column=3)
-  week.value = 'Week =>'
-  week.alignment = Alignment(horizontal='right')
-  week.font = Font(name='Times New Roman', size=12, italic=True)
+  week_cell = ss['sheet'].cell(row=bye_row + 1, column=3)
+  week_cell.value = 'Week =>'
+  week_cell.alignment = Alignment(horizontal='right')
+  week_cell.font = Font(name='Times New Roman', size=12, italic=True)
 
-  total = ss['sheet'].cell(row=bye_row+2, column=3)
-  total.value = 'Total =>'
-  total.alignment = Alignment(horizontal='right')
-  total.font = Font(name='Times New Roman', size=12, italic=True)
+  total_cell = ss['sheet'].cell(row=bye_row + 2, column=3)
+  total_cell.value = 'Total =>'
+  total_cell.alignment = Alignment(horizontal='right')
+  total_cell.font = Font(name='Times New Roman', size=12, italic=True)
+
+  footer_row = bye_row + 3
+  write_footer_header(ss, footer_row, week)
   return
 
 def init(ss, week):
@@ -153,4 +171,3 @@ def init(ss, week):
   print(formatted_byes)
   write_game_info(ss, week, matchups, game_data, formatted_byes)
   return
-

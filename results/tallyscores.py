@@ -1,4 +1,4 @@
-from openpyxl.styles import PatternFill, Font, Border
+from openpyxl.styles import PatternFill, Font
 
 def color_fill(ws, score, row_num):
   score_split = score.split(' ')

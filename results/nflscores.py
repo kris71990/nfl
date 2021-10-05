@@ -12,7 +12,7 @@ def get_scores(week):
   scores = {}
 
   for each in scores_raw:
-    score = each.getText()
+    score = each.get_text()
     print(score)
     score_split = score.split(' ')
     # if tie *** may be buggy ***
@@ -40,7 +40,7 @@ def write_scores(ss, week):
   else:
     start_week = 'Week ' + week
 
-  for cell in ss['sheet'].columns[0]:
+  for cell in ss['sheet']['A']:
     if cell.value == start_week:
       start_row += 2
       for row_num in range(start_row, len(scores) + start_row):
