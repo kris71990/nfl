@@ -33,7 +33,7 @@ def color_fill(ws, score, row_num):
       except ValueError:
         line_num = float(line[1][:-1] + '.5')
 
-      if score_split[0] == line[0] and (int(spread[0]) - int(spread[1])) > line_num:
+      if score_split[0] == line[0] and (int(spread[0]) - int(spread[1])) >= line_num:
         team = score_split[0]
         if team == pick_cell_text.upper():
           pick_cell.fill = PatternFill("solid", fgColor="009051") # green
