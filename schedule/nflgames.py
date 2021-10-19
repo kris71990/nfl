@@ -172,5 +172,5 @@ def init(ss, week):
   printable_game_data(game_data)
   print('\n')
   print(formatted_byes)
-  # write_game_info(ss, week, matchups, game_data, formatted_byes)
+  write_game_info(ss, week, matchups, game_data, formatted_byes)
   return
