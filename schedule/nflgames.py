@@ -87,9 +87,6 @@ def create_game_data(matchups, odds):
       line = 'Pick'
 
     data[i][matchups[i]] = line
-    print(line)
-
-  print('\n')
   return data
 
 def write_footer_header(ss, footer_row, week):
@@ -156,6 +153,12 @@ def write_game_info(ss, week, matchups, game_data, formatted_byes):
   write_footer_header(ss, footer_row, week)
   return
 
+def printable_game_data(game_data):
+  for key, value in game_data.items():
+    for game, line in value.items():
+      x = '{0} => {1}'.format(game, line)
+      print(x)
+
 def init(ss, week):
   odds_soup = soup.get_odds_soup()
   bye_data = schedule.byeteams.get_bye_teams(week)
@@ -166,8 +169,8 @@ def init(ss, week):
   # Print all weekly game information to console
   print('\nGames for Week %s\n' % (week))
   game_data = create_game_data(matchups, odds)
-  print(game_data)
+  printable_game_data(game_data)
   print('\n')
   print(formatted_byes)
-  write_game_info(ss, week, matchups, game_data, formatted_byes)
+  # write_game_info(ss, week, matchups, game_data, formatted_byes)
   return
