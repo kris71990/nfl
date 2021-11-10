@@ -25,28 +25,37 @@ def color_fill(ws, score, row_num):
         pick_cell.fill = PatternFill("solid", fgColor="FF7E79") # red
     # against line
     else:
-      line = ws.cell(row=row_num, column=2).value.upper().split(' -')
+      line = ws.cell(row=row_num, column=2).value.upper()
+      line_list = line.split(' -')
       spread = score_split[1].split('-')
 
-      try:
-        line_num = int(line[1])
-      except ValueError:
-        line_num = float(line[1][:-1] + '.5')
-
-      if score_split[0] == line[0] and (int(spread[0]) - int(spread[1])) >= line_num:
+      # if Pick'em
+      if line == 'PICK':
         team = score_split[0]
         if team == pick_cell_text.upper():
           pick_cell.fill = PatternFill("solid", fgColor="009051") # green
         else:
-          pick_cell.fill = PatternFill("solid", fgColor="FF7E79") # red
-      elif score_split[0] != line[0]:
-        team = score_split[0]
-        if team == pick_cell_text.upper():
-          pick_cell.fill = PatternFill("solid", fgColor="009051") # green
-        else: 
           pick_cell.fill = PatternFill("solid", fgColor="FF7E79") # red
       else:
-        if pick_cell_text.upper() != line[0]:
-          pick_cell.fill = PatternFill("solid", fgColor="009051") # green
+        try:
+          line_num = int(line_list[1])
+        except ValueError:
+          line_num = float(line_list[1][:-1] + '.5')
+
+        if score_split[0] == line_list[0] and (int(spread[0]) - int(spread[1])) >= line_num:
+          team = score_split[0]
+          if team == pick_cell_text.upper():
+            pick_cell.fill = PatternFill("solid", fgColor="009051") # green
+          else:
+            pick_cell.fill = PatternFill("solid", fgColor="FF7E79") # red
+        elif score_split[0] != line_list[0]:
+          team = score_split[0]
+          if team == pick_cell_text.upper():
+            pick_cell.fill = PatternFill("solid", fgColor="009051") # green
+          else: 
+            pick_cell.fill = PatternFill("solid", fgColor="FF7E79") # red
         else:
-          pick_cell.fill = PatternFill("solid", fgColor="FF7E79") # red
+          if pick_cell_text.upper() != line_list[0]:
+            pick_cell.fill = PatternFill("solid", fgColor="009051") # green
+          else:
+            pick_cell.fill = PatternFill("solid", fgColor="FF7E79") # red
