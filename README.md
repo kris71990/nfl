@@ -53,7 +53,7 @@ The `PATH` is the location on your computer from which to load and save the exce
 
 ---
 
-There are two actions to take.
+There are three potential actions to take.
 1. Schedule
 
 Ex. Running the following will enter the schedule and betting lines for Week 2:
@@ -70,6 +70,15 @@ Ex. Running the following will enter the scores from Week 1:
      OR
      python nfl.py scores 1
 
+3. Scores and Schedule
+
+Ex. Running the following will enter scores from Week 1 and schedule for Week 2:
+
+     python nfl.py scores+ 'Week 1'
+     OR
+     python nfl.py scores+ 1
+
+
 For best results dependent on how *Vegas Insider* is structured, the `Schedule` action should be run after the previous week is complete and before the next week begins (Tuesday or Wednesday on usual weeks). The `Scores` action should be run similarly - after all games have completed for the week and before the next week's games begin.
 
 
@@ -81,4 +90,4 @@ This is an example spreadsheet formatted for the application.
 
 Columns A and B are where matchups and betting lines are entered through the `Schedule` action. 
 
-Column C is for final scores. Columns H-K are for user picks and are color coded depending on game results. This is accomplished with the `Scores` action.
+Column C is for final scores. Columns E-H are for user picks and are color coded depending on game results. This is accomplished with the `Scores` action.
