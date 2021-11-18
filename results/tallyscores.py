@@ -20,8 +20,8 @@ def color_fill(ws, score, row_num):
         # if game spread == pick spread, spread font == bold yellow
         if int(spread[0]) - int(spread[1]) == int(pick_cell_split[2]):
           pick_cell.font = Font(name='Times New Roman', size=12, color="FFFB00", bold=True)
-      # else color cell red    
-      else:
+      # else color cell red
+      else: 
         pick_cell.fill = PatternFill("solid", fgColor="FF7E79") # red
     # against line
     else:
@@ -30,6 +30,7 @@ def color_fill(ws, score, row_num):
       spread = score_split[1].split('-')
 
       # if Pick'em
+      # Honest question: what happens if a pickem game ends in a tie????
       if line == 'PICK':
         team = score_split[0]
         if team == pick_cell_text.upper():
@@ -48,6 +49,12 @@ def color_fill(ws, score, row_num):
             pick_cell.fill = PatternFill("solid", fgColor="009051") # green
           else:
             pick_cell.fill = PatternFill("solid", fgColor="FF7E79") # red
+        # if tie, line pick is green if opposite of favored team
+        elif score_split[0] == 'TIE':
+          if line_list[0] == pick_cell_text.upper():
+            pick_cell.fill = PatternFill("solid", fgColor="FF7E79") # red
+          else:
+            pick_cell.fill = PatternFill("solid", fgColor="009051") # green
         elif score_split[0] != line_list[0]:
           team = score_split[0]
           if team == pick_cell_text.upper():

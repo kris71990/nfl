@@ -17,7 +17,7 @@ def get_scores(week):
     score_split = score.split(' ')
     # if tie *** may be buggy ***
     if (score_split[1].strip(', ') == score_split[3]):
-      scores[score_split[0] + '-' + scores[score_split[2]]] = '%s-%s' % (score_split[1].strip(','), score_split[3])
+      scores[score_split[0] + '-' + score_split[2]] = '%s-%s' % (score_split[1].strip(','), score_split[3])
     else:
       # if overtime, add OT to string
       if (len(score_split) > 4):
@@ -61,6 +61,12 @@ def write_scores(ss, week):
           score_cell.alignment = Alignment(horizontal='center', vertical='center')
         elif (team2abbr in scores):
           score = '%s %s' % (team2abbr, scores[team2abbr])
+          score_cell.value = score
+          score_cell.font = Font(name='Times New Roman', size=12)
+          score_cell.alignment = Alignment(horizontal='center', vertical='center')
+        # tie
+        else:
+          score = 'TIE ' + scores[team1abbr + '-' + team2abbr]
           score_cell.value = score
           score_cell.font = Font(name='Times New Roman', size=12)
           score_cell.alignment = Alignment(horizontal='center', vertical='center')
