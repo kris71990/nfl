@@ -31,5 +31,3 @@ def get_team_records():
   }
   
   return team_records_dict
-
-
