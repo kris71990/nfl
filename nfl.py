@@ -9,8 +9,15 @@ load_dotenv()
 action = sys.argv[1]
 
 if len(sys.argv) < 3:
-  if action == 'teams': print(nflteams.get_team_records())
-  print('Done')
+  if action == 'teams': 
+    teams = nflteams.get_team_records()
+    print('\nPower Rankings\n')
+    for key, value in teams.items():
+      if len(key) < 8:
+        print(key + '\t\t' + value)
+      else:
+        print(key + '\t' + value)
+  print('\nDone')
 else:
   week = sys.argv[2]
   if 'Week' in week:

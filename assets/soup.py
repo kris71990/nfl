@@ -11,7 +11,8 @@ def get_scores_soup(week):
 
 # get matchups soup with records
 def get_matchups_soup():
-  url = 'http://www.vegasinsider.com/nfl/matchups/'
+  # url = 'http://www.vegasinsider.com/nfl/matchups/'
+  url = 'https://www.teamrankings.com/nfl/trends/win_trends/'
   res = requests.get(url)
   res.raise_for_status()
   soup = BeautifulSoup(res.text, 'html.parser')
