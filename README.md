@@ -53,7 +53,7 @@ The `PATH` is the location on your computer from which to load and save the exce
 
 ---
 
-There are three potential actions to take.
+There are four potential actions to take.
 1. Schedule
 
 Ex. Running the following will enter the schedule and betting lines for Week 2:
@@ -77,6 +77,12 @@ Ex. Running the following will enter scores from Week 1 and schedule for Week 2:
      python nfl.py scores+ 'Week 1'
      OR
      python nfl.py scores+ 1
+
+4. Power Rankings
+
+This command does not touch the spreadsheet, but prints an ordered list of teams from best to worst records:
+
+     python nfl.py teams
 
 
 For best results dependent on how *Vegas Insider* is structured, the `Schedule` action should be run after the previous week is complete and before the next week begins (Tuesday or Wednesday on usual weeks). The `Scores` action should be run similarly - after all games have completed for the week and before the next week's games begin.
