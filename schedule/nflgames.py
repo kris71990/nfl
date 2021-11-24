@@ -27,8 +27,7 @@ def find_matchups(byes, soup):
   dict = schedule.nflteams.get_team_records()
 
   for i in range(0, num_games):
-    matchups.append(teams_raw[matchup_num] + ' ' + dict.get(teams_raw[matchup_num]) + \
-    ' at ' + teams_raw[matchup_num_2] + ' ' + dict.get(teams_raw[matchup_num_2]))
+    matchups.append(teams_raw[matchup_num] + ' (' + dict.get(teams_raw[matchup_num]) + ') at ' + teams_raw[matchup_num_2] + ' (' + dict.get(teams_raw[matchup_num_2]) + ')')
     matchup_num += 2
     matchup_num_2 += 2
 
