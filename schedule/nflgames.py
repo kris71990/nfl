@@ -89,7 +89,7 @@ def create_game_data(matchups, odds):
   return data
 
 def write_footer_header(ss, footer_row, week):
-  if (int(week) + 1 > 17):
+  if (int(week) + 1 > 18):
     next_week = weekInfo.playoff_week_titles[week]
   else:
     next_week = 'Week ' + str(int(week) + 1)
