@@ -90,7 +90,7 @@ def create_game_data(matchups, odds):
 
 def write_footer_header(ss, footer_row, week):
   if (int(week) + 1 > 18):
-    next_week = weekInfo.playoff_week_titles[week]
+    next_week = weekInfo.playoff_week_titles[str(int(week) + 1)]
   else:
     next_week = 'Week ' + str(int(week) + 1)
   
@@ -111,7 +111,7 @@ def write_game_info(ss, week, matchups, game_data, formatted_byes):
   #find spreadsheet start row and write game info to appropriate cells
   write_matchup_num = 0
   start_row = 0
-  if (int(week) > 17):
+  if (int(week) > 18):
     start_week = weekInfo.playoff_week_titles[week]
   else:
     start_week = 'Week ' + week
