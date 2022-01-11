@@ -16,7 +16,7 @@ def color_fill(ws, score, row_num):
       if pick_cell_split[0].upper() == score_split[0]:
         pick_cell.fill = PatternFill("solid", fgColor="009051") # green
         spread = score_split[1].split('-')
-
+        
         # if game spread == pick spread, spread font == bold yellow
         if int(spread[0]) - int(spread[1]) == int(pick_cell_split[2]):
           pick_cell.font = Font(name='Times New Roman', size=12, color="FFFB00", bold=True)

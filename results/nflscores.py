@@ -35,8 +35,8 @@ def write_scores(ss, week):
   # find spreadsheet start row and write scores to appropriate cells
   write_score_index = 0
   start_row = 0
-  if int(week) > 17:
-    start_week = weekInfo.playoff_week_titles[week]
+  if int(week) > 18:
+    start_week = weekInfo.playoff_week_titles[str(int(week) + 1)]
   else:
     start_week = 'Week ' + week
 
