@@ -166,7 +166,11 @@ def init(ss, week):
   odds = find_odds(odds_soup)
 
   # Print all weekly game information to console
-  print('\nGames for Week %s\n' % (week))
+  if int(week) > 18:
+    print('\n%s Playoff games\n' % (weekInfo.playoff_week_titles[week]))
+  else:
+    print('\nGames for Week %s\n' % (week))
+
   game_data = create_game_data(matchups, odds)
   printable_game_data(game_data)
   print('\n')

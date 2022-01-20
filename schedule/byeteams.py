@@ -4,7 +4,9 @@
 from assets import soup
 
 def get_bye_teams(week):
-  schedule_soup = soup.get_scores_soup(week)
+  espn_format = soup.convert_espn(week)
+
+  schedule_soup = soup.get_scores_soup(espn_format['espn_week'], espn_format['espn_season_type'])
   bye_teams_html = schedule_soup.select('.odd.byeweek a span')
   bye_teams = []
 

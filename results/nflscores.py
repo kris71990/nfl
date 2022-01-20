@@ -7,7 +7,8 @@ from openpyxl import load_workbook
 from openpyxl.styles import Font, Alignment
 
 def get_scores(week):
-  scores_soup = soup.get_scores_soup(week)
+  espn_format = soup.convert_espn(week)
+  scores_soup = soup.get_scores_soup(espn_format['espn_week'], espn_format['espn_season_type'])
   scores_raw = scores_soup.find_all('a', { 'name': '&lpos=nfl:schedule:score' })
   scores = {}
 
@@ -29,14 +30,19 @@ def get_scores(week):
 
 def write_scores(ss, week):
   print('\nWriting to spreadsheet...\n')
-  print('Week %s results:\n' % week)
+
+  if (int(week) > 18):
+    print('%s Playoff results:\n' % weekInfo.playoff_week_titles[week])
+  else:
+    print('Week %s results:\n' % week)
+    
   scores = get_scores(week)
 
   # find spreadsheet start row and write scores to appropriate cells
   write_score_index = 0
   start_row = 0
   if int(week) > 18:
-    start_week = weekInfo.playoff_week_titles[str(int(week) + 1)]
+    start_week = weekInfo.playoff_week_titles[str(int(week))]
   else:
     start_week = 'Week ' + week
 
