@@ -89,14 +89,20 @@ def create_game_data(matchups, odds):
   return data
 
 def write_footer_header(ss, footer_row, week):
-  if (int(week) + 1 > 18):
-    next_week = weekInfo.playoff_week_titles[str(int(week) + 1)]
-  else:
-    next_week = 'Week ' + str(int(week) + 1)
-  
+  # blue color fill footer
   for row in ss['sheet'].iter_rows(min_row=footer_row, max_row=footer_row):
     for cell in row:
       cell.fill = PatternFill("solid", fgColor="43889D")
+  
+  # next week header    
+  week_num = int(week)
+  if (week_num + 1 < 18):
+    next_week = 'Week ' + str(week_num + 1)
+  elif (week_num + 1 < 23):
+    next_week = weekInfo.playoff_week_titles[str(week_num + 1)]
+  else:
+    # super bowl
+    return
   
   next_week_cell = ss['sheet'].cell(row=footer_row + 1, column=1)
   next_week_cell.value = next_week
@@ -167,7 +173,7 @@ def init(ss, week):
 
   # Print all weekly game information to console
   if int(week) > 18:
-    print('\n%s Playoff games\n' % (weekInfo.playoff_week_titles[week]))
+    print('\n%s\n' % (weekInfo.playoff_week_titles[week]))
   else:
     print('\nGames for Week %s\n' % (week))
 

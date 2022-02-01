@@ -28,7 +28,7 @@ else:
     nflscores.write_scores(ss, week)
 
     next_week = int(week) + 1
-    if next_week < 22:
+    if next_week < 23:
       nflgames.init(ss, str(next_week))
 
     actions.save_spreadsheet(ss['wb'])
