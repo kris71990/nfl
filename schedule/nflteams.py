@@ -6,7 +6,6 @@ from assets import soup
 
 def get_team_records():
   matchups_soup = soup.get_matchups_soup()
-  # teams_html = matchups_soup.select('.viCellBg2.cellBorderL1.cellTextNorm.padLeft')
   teams_html = matchups_soup.select('td')
   teams_dict = {}
 

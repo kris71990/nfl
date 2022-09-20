@@ -1,5 +1,6 @@
-# teaminfo.pu
+# teaminfo.py
 # a dictionary of teams and their abbreviation, to be utilized in spreadsheet insertion
+# helper functions to translate between team name formats
 
 abbreviations = {
   'Miami' : 'Mia',
@@ -36,9 +37,20 @@ abbreviations = {
   'Carolina' : 'Car'
 }
 
-# Patterns
-# - Normal: first three letters
-# - With Space : first letter of each word
-# - With Period : letters between periods, plus first letter of following word
-# - Two same letters in a row (Minn, Tenn, Pitt, Buff) : include both letters
-# - Logical Oddballs (Balt, Wash, Az, Jax) : ...
+def reformat_without_nickname(team):
+  team_split = team.split(' ')
+
+  if team_split[1] == 'York' or team_split[1] == 'Angeles':
+    reformatted_team = reformat_city_multiple_teams(team_split)
+    return reformatted_team
+
+  if len(team_split) > 2:
+    reformatted_team = ' '.join(team_split[:2])
+  else:
+    reformatted_team = team_split[0]
+  return reformatted_team
+
+def reformat_city_multiple_teams(team_split):
+  city = team_split[0][0] + '.' + team_split[1][0] + '.'
+  reformatted_team = city + ' ' + team_split[2]
+  return reformatted_team

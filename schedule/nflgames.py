@@ -8,16 +8,17 @@ from openpyxl.styles import Alignment, Font, PatternFill
 
 # find and parse soup for game matchups
 def find_matchups(byes, soup):
-  teams_html = soup.select('a[class=tabletext]')
+  teams_html = soup.findAll('div', class_=['team-stats-box'])
   teams_raw = []
-  print(teams_raw)
 
   for item in teams_html:
-    team = item.getText()
-    teams_raw.append(team)
+    team = item.getText().strip()
+    team_without_name = teaminfo.reformat_without_nickname(team)
+    teams_raw.append(team_without_name)
 
   # cut list down to accomodate extra games website is now displaying
-  total_active_teams = 32 - len(byes) 
+  bye_length = 0 if byes is None else len(byes)
+  total_active_teams = 32 - bye_length 
   teams_raw = teams_raw[:total_active_teams]
 
   # create the matchups from teams_raw list
@@ -25,14 +26,13 @@ def find_matchups(byes, soup):
   matchup_num = 0
   matchup_num_2 = matchup_num + 1
   num_games = int(len(teams_raw) / 2)
-  dict = schedule.nflteams.get_team_records()
+  records = schedule.nflteams.get_team_records()
 
   for i in range(0, num_games):
-    matchups.append(teams_raw[matchup_num] + ' (' + dict.get(teams_raw[matchup_num]) + ') at ' + teams_raw[matchup_num_2] + ' (' + dict.get(teams_raw[matchup_num_2]) + ')')
+    matchups.append(teams_raw[matchup_num] + ' (' + records.get(teams_raw[matchup_num]) + ') at ' + teams_raw[matchup_num_2] + ' (' + records.get(teams_raw[matchup_num_2]) + ')')
     matchup_num += 2
     matchup_num_2 += 2
 
-  print(matchups)
   return matchups
 
 # finds odds soup and parses it to find the VI consensus for every matchup

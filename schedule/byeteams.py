@@ -7,20 +7,23 @@ def get_bye_teams(week):
   espn_format = soup.convert_espn(week)
 
   schedule_soup = soup.get_scores_soup(espn_format['espn_week'], espn_format['espn_season_type'])
-  bye_teams_html = schedule_soup.select('.odd.byeweek a span')
+  bye_teams_html = schedule_soup.select('.pr6')
   bye_teams = []
 
   for each in bye_teams_html:
     team = each.getText()
     bye_teams.append(team)
 
-  return bye_teams
-
-def format_byes(bye_teams):
-  if len(bye_teams) == 0: 
+  if bye_teams_html:
+    return bye_teams
+  else:
     return None
 
-  bye_string = '* Bye - '
+def format_byes(bye_teams):
+  if bye_teams is None: 
+    return None
+
+  bye_string = '*Bye - '
   count = 0
   for each in range(0, len(bye_teams)):
     count += 1
