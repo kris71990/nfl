@@ -10,6 +10,7 @@ from openpyxl.styles import Alignment, Font, PatternFill
 def find_matchups(byes, soup):
   teams_html = soup.select('a[class=tabletext]')
   teams_raw = []
+  print(teams_raw)
 
   for item in teams_html:
     team = item.getText()
@@ -31,6 +32,7 @@ def find_matchups(byes, soup):
     matchup_num += 2
     matchup_num_2 += 2
 
+  print(matchups)
   return matchups
 
 # finds odds soup and parses it to find the VI consensus for every matchup
@@ -181,5 +183,5 @@ def init(ss, week):
   printable_game_data(game_data)
   print('\n')
   print(formatted_byes)
-  write_game_info(ss, week, matchups, game_data, formatted_byes)
+  # write_game_info(ss, week, matchups, game_data, formatted_byes)
   return
