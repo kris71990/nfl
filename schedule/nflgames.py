@@ -37,30 +37,25 @@ def find_matchups(byes, soup):
 
 # finds odds soup and parses it to find the VI consensus for every matchup
 def find_odds(soup):
-  odds_html = soup.findAll('td', class_=['cellTextNorm', 'cellTextHot'])
+  odds_html = soup.findAll('div', class_=['pt-2'])
   odds = []
+  location_favored = 'a'
 
-  for x in range(8, len(odds_html), 9):
-    game_odd_text = odds_html[x].get_text()
-    game_odd = game_odd_text.replace('\t', '').replace('\n', '').replace('\xa0', '')
+  for x in range(1, len(odds_html), 13):
+    game_odd = odds_html[x].get_text().strip()
 
-    # find if home or road team is favored
-    if (len(game_odd.split('u')) > 1):
-      team_favored_odd = {}
+    # find if home or road team is favored, toggle location variable after every cycle to track home/road odds
+    if (not game_odd.startswith('-')):
+      location_favored = 'h' if location_favored == 'a' else 'a'
+      continue
 
-      if ('PK' in game_odd): # neither
-        team_favored_odd['n'] = 'Pick'
-        odds.append(team_favored_odd)
-        continue
+    # if ('PK' in game_odd): # neither
+    #   team_favored_odd['n'] = 'Pick'
+    #   odds.append(team_favored_odd)
+    #   continue
 
-      if (game_odd.startswith('-')): # road
-        parsed_line = game_odd.split('-', 2)[1]
-        team_favored_odd['r'] = '-' + re.split('EV', parsed_line)[0]
-        odds.append(team_favored_odd)
-      else: # home
-        parsed_line = game_odd.split('-10', 1)[1].split('-')[1]
-        team_favored_odd['h'] = '-' + re.split('EV', parsed_line)[0]
-        odds.append(team_favored_odd)
+    odds.append({ location_favored: game_odd })
+    location_favored = 'h' if location_favored == 'a' else 'a'
 
   return odds
 
@@ -80,10 +75,10 @@ def create_game_data(matchups, odds):
       stripped_team = rx.search(teams[1]).group(0).strip()
       team_abbreviation = teaminfo.abbreviations[stripped_team]
       line = '%s %s' % (team_abbreviation, odds[i]['h'])
-    elif ('r' in odds[i]): # if road team is favoured
+    elif ('a' in odds[i]): # if road team is favoured
       stripped_team = rx.search(teams[0]).group(0).strip()
       team_abbreviation = teaminfo.abbreviations[stripped_team]
-      line = '%s %s' % (team_abbreviation, odds[i]['r'])
+      line = '%s %s' % (team_abbreviation, odds[i]['a'])
     else:
       line = 'Pick'
 
@@ -183,5 +178,5 @@ def init(ss, week):
   printable_game_data(game_data)
   print('\n')
   print(formatted_byes)
-  # write_game_info(ss, week, matchups, game_data, formatted_byes)
+  write_game_info(ss, week, matchups, game_data, formatted_byes)
   return

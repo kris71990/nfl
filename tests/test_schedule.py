@@ -36,5 +36,27 @@ class TestMatchups(unittest.TestCase):
     self.assertIs(type(matchups), list)
     self.assertEqual(len(matchups), 16 - (bye_number / 2))
 
+  def test_find_odds(self):
+    byes = byeteams.get_bye_teams('3')
+    bye_number = len(byes) if byes else 0
+    odds_soup = soup.get_odds_soup()
+    odds = nflgames.find_odds(odds_soup)
+
+    self.assertIs(type(odds), list)
+    self.assertIs(type(odds[0]), dict)
+    self.assertEqual(len(odds), 16 - (bye_number / 2))
+
+  def test_game_data(self):
+    byes = byeteams.get_bye_teams('3')
+    odds_soup = soup.get_odds_soup()
+    matchups = nflgames.find_matchups(byes, odds_soup)
+    odds = nflgames.find_odds(odds_soup)
+
+    games = nflgames.create_game_data(matchups, odds)
+    self.assertIs(type(games), dict)
+    self.assertIs(type(games[0]), dict)
+    self.assertIs(type(list(games[0].keys())[0]), str)
+    self.assertIs(type(list(games[0].values())[0]), str)
+
 if __name__ == '__main__':
   unittest.main()

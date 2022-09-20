@@ -76,7 +76,7 @@ def write_scores(ss, week):
           score_cell.value = score
           score_cell.font = Font(name='Times New Roman', size=12)
           score_cell.alignment = Alignment(horizontal='center', vertical='center')
-        results.tallyscores.color_fill(ss['sheet'], score, row_num)
+        # results.tallyscores.color_fill(ss['sheet'], score, row_num)
         write_score_index += 1       
     else: 
       start_row += 1
