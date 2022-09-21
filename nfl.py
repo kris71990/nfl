@@ -38,11 +38,12 @@ else:
     actions.save_spreadsheet(ss['wb'])
   elif action == 'scores+': # scores plus tally scores
     ss = actions.load_spreadsheet()
-    nflscores.write_scores(ss, week)
+    nflscores.write_scores(ss, week, True)
     actions.save_spreadsheet(ss['wb'])
-  elif action = 'scores' # just scores
-    
-  elif action = 'tally' # just tally scores
+  elif action == 'scores': # just scores
+    ss = actions.load_spreadsheet()
+    nflscores.write_scores(ss, week, False)
+    actions.save_spreadsheet(ss['wb'])
   else:
     print('Done')
 
