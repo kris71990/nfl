@@ -33,7 +33,10 @@ EXCEL_FILE={ Name of excel file }
 EXCEL_FILE_NEW={ Name of new excel file }
 ```
 
-The `PATH` is the location on your computer from which to load and save the excel files. The `EXCEL FILE` is the name of an existing excel file that will be edited. `EXCEL_FILE_NEW` is the name of a new file that will be saved after editing.
+An excel file should be created first prior to running the scripts - a header reading the next week to be recorded should be in Column A - for example `Week 1` if your next action will be adding the schedule for Week 1.
+
+The `PATH` is the location on your computer from which to load and save the excel files. The `EXCEL FILE` is the name of an existing excel file that will be edited. `EXCEL_FILE_NEW` is the name of a new file that will be saved after editing. 
+
 
 ### Testing
 
