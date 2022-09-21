@@ -25,7 +25,7 @@ else:
 
   if action == 'scores++': # scores and schedule of next week
     ss = actions.load_spreadsheet()
-    nflscores.write_scores(ss, week)
+    nflscores.write_scores(ss, week, True)
 
     next_week = int(week) + 1
     if next_week < 23:

@@ -24,8 +24,9 @@ These scripts use the following libraries:
 > <a href="https://pypi.org/project/python-dotenv/">***dotenv***</a>
 > for enironment variables 
 
+1. Install dependencies with the requirements.txt file: `pip install -r requirements.txt`
 
-Create a .env file in root of project. The .env file must contain the following variables:
+2. Create a .env file in root of project. The .env file must contain the following variables:
 ```
 PATH={ Name of path }
 EXCEL_FILE={ Name of excel file }
@@ -34,6 +35,9 @@ EXCEL_FILE_NEW={ Name of new excel file }
 
 The `PATH` is the location on your computer from which to load and save the excel files. The `EXCEL FILE` is the name of an existing excel file that will be edited. `EXCEL_FILE_NEW` is the name of a new file that will be saved after editing.
 
+### Testing
+
+Core functionality has been tested with Python's `unittest` library. Run tests with: `python -m unittest`
 
 
 ### Documentation
@@ -53,7 +57,7 @@ The `PATH` is the location on your computer from which to load and save the exce
 
 ---
 
-There are four potential actions to take.
+There are five potential actions to take.
 1. Schedule
 
 Ex. Running the following will enter the schedule and betting lines for Week 2:
@@ -70,15 +74,23 @@ Ex. Running the following will enter the scores from Week 1:
      OR
      python nfl.py scores 1
 
-3. Scores and Schedule
+3. Scores (with pick tally) and Schedule
 
 Ex. Running the following will enter scores from Week 1 and schedule for Week 2:
+
+     python nfl.py scores++ 'Week 1'
+     OR
+     python nfl.py scores+ 1
+
+4. Scores with pick tally
+
+Ex. The following will enter scores from Week 1 and tally user picks
 
      python nfl.py scores+ 'Week 1'
      OR
      python nfl.py scores+ 1
 
-4. Power Rankings
+5. Power Rankings
 
 This command does not touch the spreadsheet, but prints an ordered list of teams from best to worst records:
 

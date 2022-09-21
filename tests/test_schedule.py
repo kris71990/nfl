@@ -31,7 +31,6 @@ class TestMatchups(unittest.TestCase):
     byes = byeteams.get_bye_teams('2')
     odds_soup = soup.get_odds_soup()
     matchups = nflgames.find_matchups(byes, odds_soup)
-    print(matchups)
 
     bye_number = len(byes) if byes else 0
     self.assertIs(type(matchups), list)
