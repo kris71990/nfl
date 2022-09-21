@@ -10,7 +10,7 @@ class TestTeams(unittest.TestCase):
 
 class TestByes(unittest.TestCase):
   def test_bye_teams(self):
-    byes = byeteams.get_bye_teams('3')
+    byes = byeteams.get_bye_teams('2')
 
     if byes is None:
       self.assertIsNone(byes)
@@ -18,7 +18,7 @@ class TestByes(unittest.TestCase):
       self.assertIs(type(byes), list)
 
   def test_format_byes(self):
-    byes = byeteams.get_bye_teams('3')
+    byes = byeteams.get_bye_teams('2')
     formatted_byes = byeteams.format_byes(byes)
     
     if byes is None:
@@ -28,16 +28,17 @@ class TestByes(unittest.TestCase):
 
 class TestMatchups(unittest.TestCase):
   def test_find_matchups(self):
-    byes = byeteams.get_bye_teams('3')
+    byes = byeteams.get_bye_teams('2')
     odds_soup = soup.get_odds_soup()
     matchups = nflgames.find_matchups(byes, odds_soup)
+    print(matchups)
 
     bye_number = len(byes) if byes else 0
     self.assertIs(type(matchups), list)
     self.assertEqual(len(matchups), 16 - (bye_number / 2))
 
   def test_find_odds(self):
-    byes = byeteams.get_bye_teams('3')
+    byes = byeteams.get_bye_teams('2')
     bye_number = len(byes) if byes else 0
     odds_soup = soup.get_odds_soup()
     odds = nflgames.find_odds(odds_soup)
@@ -47,7 +48,7 @@ class TestMatchups(unittest.TestCase):
     self.assertEqual(len(odds), 16 - (bye_number / 2))
 
   def test_game_data(self):
-    byes = byeteams.get_bye_teams('3')
+    byes = byeteams.get_bye_teams('2')
     odds_soup = soup.get_odds_soup()
     matchups = nflgames.find_matchups(byes, odds_soup)
     odds = nflgames.find_odds(odds_soup)

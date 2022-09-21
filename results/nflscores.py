@@ -9,7 +9,7 @@ from openpyxl.styles import Font, Alignment
 def get_scores(week):
   espn_format = soup.convert_espn(week)
   scores_soup = soup.get_scores_soup(espn_format['espn_week'], espn_format['espn_season_type'])
-  scores_raw = scores_soup.find_all('a', { 'name': '&lpos=nfl:schedule:score' })
+  scores_raw = scores_soup.find_all('td', class_=['teams__col'])
   scores = {}
 
   for each in scores_raw:

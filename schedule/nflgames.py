@@ -130,9 +130,13 @@ def write_game_info(ss, week, matchups, game_data, formatted_byes):
           bye_row = row_num
 
         game.value = matchups[write_matchup_num]
+        game.alignment = Alignment(vertical='bottom', horizontal='left')
+        game.font = Font(name='Times New Roman', size=12, bold=True)
 
         line = ss['sheet'].cell(row=row_num, column=2)
         line.value = game_data[write_matchup_num][matchups[write_matchup_num]]
+        line.alignment = Alignment(vertical='bottom', horizontal='center')
+        line.font = Font(name='Times New Roman', size=12)
         write_matchup_num += 1       
     else: 
       start_row += 1
@@ -177,6 +181,11 @@ def init(ss, week):
   game_data = create_game_data(matchups, odds)
   printable_game_data(game_data)
   print('\n')
-  print(formatted_byes)
+
+  if formatted_byes is None:
+    print('No Byes')
+  else:
+    print(formatted_byes)
+    
   write_game_info(ss, week, matchups, game_data, formatted_byes)
   return
