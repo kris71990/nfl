@@ -14,7 +14,6 @@ def get_scores(week):
 
   for each in scores_raw:
     score = each.get_text()
-    print(score)
     score_split = score.split(' ')
     # if tie *** may be buggy ***
     if (score_split[1].strip(', ') == score_split[3]):
@@ -77,7 +76,7 @@ def write_scores(ss, week, tally):
           score_cell.value = score
           score_cell.font = Font(name='Times New Roman', size=12)
           score_cell.alignment = Alignment(horizontal='center', vertical='center')
-          
+
         if tally is True: 
           results.tallyscores.color_fill(ss['sheet'], score, row_num)
         write_score_index += 1       
