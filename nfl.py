@@ -23,7 +23,7 @@ else:
   if 'Week' in week:
     week = week.split(' ')[1]
 
-  if action == 'scores+':
+  if action == 'scores++': # scores and schedule of next week
     ss = actions.load_spreadsheet()
     nflscores.write_scores(ss, week)
 
@@ -32,13 +32,17 @@ else:
       nflgames.init(ss, str(next_week))
 
     actions.save_spreadsheet(ss['wb'])
-  elif action == 'schedule':
+  elif action == 'schedule': # schedule of next week
     ss = actions.load_spreadsheet()
     nflgames.init(ss, week)
     actions.save_spreadsheet(ss['wb'])
-  elif action == 'scores':
+  elif action == 'scores+': # scores plus tally scores
     ss = actions.load_spreadsheet()
-    nflscores.write_scores(ss, week)
+    nflscores.write_scores(ss, week, True)
+    actions.save_spreadsheet(ss['wb'])
+  elif action == 'scores': # just scores
+    ss = actions.load_spreadsheet()
+    nflscores.write_scores(ss, week, False)
     actions.save_spreadsheet(ss['wb'])
   else:
     print('Done')

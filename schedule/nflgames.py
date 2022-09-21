@@ -8,15 +8,17 @@ from openpyxl.styles import Alignment, Font, PatternFill
 
 # find and parse soup for game matchups
 def find_matchups(byes, soup):
-  teams_html = soup.select('a[class=tabletext]')
+  teams_html = soup.findAll('div', class_=['team-stats-box'])
   teams_raw = []
 
   for item in teams_html:
-    team = item.getText()
-    teams_raw.append(team)
+    team = item.getText().strip()
+    team_without_name = teaminfo.reformat_without_nickname(team)
+    teams_raw.append(team_without_name)
 
   # cut list down to accomodate extra games website is now displaying
-  total_active_teams = 32 - len(byes) 
+  bye_length = 0 if byes is None else len(byes)
+  total_active_teams = 32 - bye_length 
   teams_raw = teams_raw[:total_active_teams]
 
   # create the matchups from teams_raw list
@@ -24,10 +26,10 @@ def find_matchups(byes, soup):
   matchup_num = 0
   matchup_num_2 = matchup_num + 1
   num_games = int(len(teams_raw) / 2)
-  dict = schedule.nflteams.get_team_records()
+  records = schedule.nflteams.get_team_records()
 
   for i in range(0, num_games):
-    matchups.append(teams_raw[matchup_num] + ' (' + dict.get(teams_raw[matchup_num]) + ') at ' + teams_raw[matchup_num_2] + ' (' + dict.get(teams_raw[matchup_num_2]) + ')')
+    matchups.append(teams_raw[matchup_num] + ' (' + records.get(teams_raw[matchup_num]) + ') at ' + teams_raw[matchup_num_2] + ' (' + records.get(teams_raw[matchup_num_2]) + ')')
     matchup_num += 2
     matchup_num_2 += 2
 
@@ -35,30 +37,25 @@ def find_matchups(byes, soup):
 
 # finds odds soup and parses it to find the VI consensus for every matchup
 def find_odds(soup):
-  odds_html = soup.findAll('td', class_=['cellTextNorm', 'cellTextHot'])
+  odds_html = soup.findAll('div', class_=['pt-2'])
   odds = []
+  location_favored = 'a'
 
-  for x in range(8, len(odds_html), 9):
-    game_odd_text = odds_html[x].get_text()
-    game_odd = game_odd_text.replace('\t', '').replace('\n', '').replace('\xa0', '')
+  for x in range(1, len(odds_html), 13):
+    game_odd = odds_html[x].get_text().strip()
 
-    # find if home or road team is favored
-    if (len(game_odd.split('u')) > 1):
-      team_favored_odd = {}
+    # find if home or road team is favored, toggle location variable after every cycle to track home/road odds
+    if (not game_odd.startswith('-')):
+      location_favored = 'h' if location_favored == 'a' else 'a'
+      continue
 
-      if ('PK' in game_odd): # neither
-        team_favored_odd['n'] = 'Pick'
-        odds.append(team_favored_odd)
-        continue
+    # if ('PK' in game_odd): # neither
+    #   team_favored_odd['n'] = 'Pick'
+    #   odds.append(team_favored_odd)
+    #   continue
 
-      if (game_odd.startswith('-')): # road
-        parsed_line = game_odd.split('-', 2)[1]
-        team_favored_odd['r'] = '-' + re.split('EV', parsed_line)[0]
-        odds.append(team_favored_odd)
-      else: # home
-        parsed_line = game_odd.split('-10', 1)[1].split('-')[1]
-        team_favored_odd['h'] = '-' + re.split('EV', parsed_line)[0]
-        odds.append(team_favored_odd)
+    odds.append({ location_favored: game_odd })
+    location_favored = 'h' if location_favored == 'a' else 'a'
 
   return odds
 
@@ -78,10 +75,10 @@ def create_game_data(matchups, odds):
       stripped_team = rx.search(teams[1]).group(0).strip()
       team_abbreviation = teaminfo.abbreviations[stripped_team]
       line = '%s %s' % (team_abbreviation, odds[i]['h'])
-    elif ('r' in odds[i]): # if road team is favoured
+    elif ('a' in odds[i]): # if road team is favoured
       stripped_team = rx.search(teams[0]).group(0).strip()
       team_abbreviation = teaminfo.abbreviations[stripped_team]
-      line = '%s %s' % (team_abbreviation, odds[i]['r'])
+      line = '%s %s' % (team_abbreviation, odds[i]['a'])
     else:
       line = 'Pick'
 
@@ -133,9 +130,13 @@ def write_game_info(ss, week, matchups, game_data, formatted_byes):
           bye_row = row_num
 
         game.value = matchups[write_matchup_num]
+        game.alignment = Alignment(vertical='bottom', horizontal='left')
+        game.font = Font(name='Times New Roman', size=12, bold=True)
 
         line = ss['sheet'].cell(row=row_num, column=2)
         line.value = game_data[write_matchup_num][matchups[write_matchup_num]]
+        line.alignment = Alignment(vertical='bottom', horizontal='center')
+        line.font = Font(name='Times New Roman', size=12)
         write_matchup_num += 1       
     else: 
       start_row += 1
@@ -180,6 +181,11 @@ def init(ss, week):
   game_data = create_game_data(matchups, odds)
   printable_game_data(game_data)
   print('\n')
-  print(formatted_byes)
+
+  if formatted_byes is None:
+    print('No Byes')
+  else:
+    print(formatted_byes)
+    
   write_game_info(ss, week, matchups, game_data, formatted_byes)
   return

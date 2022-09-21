@@ -9,7 +9,7 @@ from openpyxl.styles import Font, Alignment
 def get_scores(week):
   espn_format = soup.convert_espn(week)
   scores_soup = soup.get_scores_soup(espn_format['espn_week'], espn_format['espn_season_type'])
-  scores_raw = scores_soup.find_all('a', { 'name': '&lpos=nfl:schedule:score' })
+  scores_raw = scores_soup.find_all('td', class_=['teams__col'])
   scores = {}
 
   for each in scores_raw:
@@ -28,7 +28,7 @@ def get_scores(week):
 
   return scores
 
-def write_scores(ss, week):
+def write_scores(ss, week, tally):
   print('\nWriting to spreadsheet...\n')
 
   if (int(week) > 18):
@@ -60,6 +60,7 @@ def write_scores(ss, week):
         team1abbr = teaminfo.abbreviations[teams[0]].upper()
         team2abbr = teaminfo.abbreviations[teams[1][3:]].upper()
         
+
         if (team1abbr in scores):
           score = '%s %s' % (team1abbr, scores[team1abbr])
           score_cell.value = score
@@ -76,7 +77,9 @@ def write_scores(ss, week):
           score_cell.value = score
           score_cell.font = Font(name='Times New Roman', size=12)
           score_cell.alignment = Alignment(horizontal='center', vertical='center')
-        results.tallyscores.color_fill(ss['sheet'], score, row_num)
+          
+        if tally is True: 
+          results.tallyscores.color_fill(ss['sheet'], score, row_num)
         write_score_index += 1       
     else: 
       start_row += 1
