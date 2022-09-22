@@ -31,9 +31,9 @@ def write_scores(ss, week, tally):
   print('\nWriting to spreadsheet...\n')
 
   if (int(week) > 18):
-    print('%s Playoff results:\n' % weekInfo.playoff_week_titles[week])
+    print('%s Playoff final scores:\n' % weekInfo.playoff_week_titles[week])
   else:
-    print('Week %s results:\n' % week)
+    print('Week %s final scores:\n' % week)
     
   scores = get_scores(week)
 
@@ -77,6 +77,7 @@ def write_scores(ss, week, tally):
           score_cell.font = Font(name='Times New Roman', size=12)
           score_cell.alignment = Alignment(horizontal='center', vertical='center')
 
+        print(score)
         if tally is True: 
           results.tallyscores.color_fill(ss['sheet'], score, row_num)
         write_score_index += 1       

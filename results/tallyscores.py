@@ -41,7 +41,13 @@ def color_fill(ws, score, row_num):
         try:
           line_num = int(line_list[1])
         except ValueError:
-          line_num = float(line_list[1][:-1] + '.5')
+          line_num = None
+        
+        
+        if line_num == None and line_list[1][-2:] == '.5':
+          line_num = float(line_list[1])
+        elif line_num == None:
+          line_num = float(line_list[1].split('.')[0] + '.5')
 
         if score_split[0] == line_list[0] and (int(spread[0]) - int(spread[1])) >= line_num:
           team = score_split[0]
