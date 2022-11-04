@@ -8,7 +8,7 @@ from openpyxl.styles import Alignment, Font, PatternFill
 
 # find and parse soup for game matchups
 def find_matchups(byes, soup):
-  teams_html = soup.findAll('div', class_=['team-stats-box'])
+  teams_html = soup.findAll('div', class_=['all-markets-team-stats-box'])
   teams_raw = []
 
   for item in teams_html:
@@ -37,25 +37,25 @@ def find_matchups(byes, soup):
 
 # finds odds soup and parses it to find the VI consensus for every matchup
 def find_odds(soup):
-  odds_html = soup.findAll('div', class_=['pt-2'])
+  odds_html = soup.find_all('div', class_='odds-box')
   odds = []
-  location_favored = 'a'
 
-  for x in range(1, len(odds_html), 13):
-    game_odd = odds_html[x].get_text().strip()
+  for x in range(1, len(odds_html), 66):
+    game_odd = odds_html[x].contents[1].get_text().strip()
+    print(game_odd)
 
     # find if home or road team is favored, toggle location variable after every cycle to track home/road odds
-    if (not game_odd.startswith('-')):
-      location_favored = 'h' if location_favored == 'a' else 'a'
-      continue
+    if (game_odd.startswith('-')):
+      location_favored = 'a'
+      odds.append({ location_favored: game_odd })
+    else:
+      location_favored = 'h'
+      odds.append({ location_favored: '-' + game_odd })
 
     # if ('PK' in game_odd): # neither
     #   team_favored_odd['n'] = 'Pick'
     #   odds.append(team_favored_odd)
     #   continue
-
-    odds.append({ location_favored: game_odd })
-    location_favored = 'h' if location_favored == 'a' else 'a'
 
   return odds
 
@@ -63,6 +63,7 @@ def find_odds(soup):
 def create_game_data(matchups, odds):
   data = {}
   keys = range(len(matchups))
+
 
   for i in keys:
     data[i] = { matchups[i] : None }
