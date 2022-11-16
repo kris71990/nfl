@@ -40,7 +40,7 @@ def find_odds(soup):
   odds_html = soup.find_all('div', class_='odds-box')
   odds = []
 
-  for x in range(1, len(odds_html), 66):
+  for x in range(1, len(odds_html), 60):
     game_odd = odds_html[x].contents[1].get_text().strip()
     print(game_odd)
 
