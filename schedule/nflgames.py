@@ -42,7 +42,6 @@ def find_odds(soup):
 
   for x in range(1, len(odds_html), 60):
     game_odd = odds_html[x].contents[1].get_text().strip()
-    print(game_odd)
 
     # find if home or road team is favored, toggle location variable after every cycle to track home/road odds
     if (game_odd.startswith('-')):
