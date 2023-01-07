@@ -93,7 +93,7 @@ def write_footer_header(ss, footer_row, week):
   
   # next week header    
   week_num = int(week)
-  if (week_num + 1 < 18):
+  if (week_num + 1 < 19):
     next_week = 'Week ' + str(week_num + 1)
   elif (week_num + 1 < 23):
     next_week = weekInfo.playoff_week_titles[str(week_num + 1)]
