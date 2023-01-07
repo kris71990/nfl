@@ -27,7 +27,12 @@ def color_fill(ws, score, row_num):
     else:
       line = ws.cell(row=row_num, column=2).value.upper()
       line_list = line.split(' -')
-      spread = score_split[1].split('-')
+
+      if (score == 'Canceled'):
+        pick_cell.fill = PatternFill("solid", fgColor="FF7E79") # red
+        continue
+      else:
+        spread = score_split[1].split('-')
 
       # if Pick'em
       # Honest question: what happens if a pickem game ends in a tie????

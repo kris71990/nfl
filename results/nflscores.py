@@ -16,7 +16,9 @@ def get_scores(week):
     score = each.get_text()
     score_split = score.split(' ')
     # if tie *** may be buggy ***
-    if (score_split[1].strip(', ') == score_split[3]):
+    if (score == 'Canceled'):
+      scores['DNF'] = 'Canceled'
+    elif (score_split[1].strip(', ') == score_split[3]):
       scores[score_split[0] + '-' + score_split[2]] = '%s-%s' % (score_split[1].strip(','), score_split[3])
     else:
       # if overtime, add OT to string
@@ -71,6 +73,11 @@ def write_scores(ss, week, tally):
           score_cell.font = Font(name='Times New Roman', size=12)
           score_cell.alignment = Alignment(horizontal='center', vertical='center')
         # tie
+        elif ('DNF' in scores):
+          score = 'Canceled'
+          score_cell.value = score
+          score_cell.font = Font(name='Times New Roman', size=12)
+          score_cell.alignment = Alignment(horizontal='center', vertical='center')
         else:
           score = 'TIE ' + scores[team1abbr + '-' + team2abbr]
           score_cell.value = score
